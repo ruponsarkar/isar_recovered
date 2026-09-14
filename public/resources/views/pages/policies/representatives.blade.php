@@ -1,0 +1,1 @@
+<p><strong>All publication applications and related procedures originating from Turkey must be conducted through our authorized representative: Ayaktan Gelen Sağlık Eğitim Danışmanlık Hizmetleri Limited Company.</strong></p>
