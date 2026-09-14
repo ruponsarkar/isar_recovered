@@ -1,0 +1,61 @@
+{
+  "name": "isar-publisher-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
+    "@mui/icons-material": "5.17.1",
+    "@mui/material": "5.17.1",
+    "@mui/x-data-grid": "6.20.4",
+    "@paypal/react-paypal-js": "8.8.3",
+    "axios": "1.9.0",
+    "bootstrap": "5.3.6",
+    "font-awesome": "4.7.0",
+    "jodit-react": "1.3.39",
+    "js-file-download": "0.4.12",
+    "lottie-react": "2.4.1",
+    "mdb-react-ui-kit": "5.1.0",
+    "mui-datatables": "4.3.0",
+    "prop-types": "15.8.1",
+    "react": "18.3.1",
+    "react-bootstrap": "2.10.10",
+    "react-countup": "6.5.3",
+    "react-dom": "18.3.1",
+    "react-dropzone": "14.3.8",
+    "react-infinite-scroll-component": "6.1.0",
+    "react-loading-skeleton": "3.5.0",
+    "react-razorpay": "2.0.1",
+    "react-redux": "8.1.3",
+    "react-router-dom": "6.30.1",
+    "react-scripts": "5.0.1",
+    "react-sortable-tree-patch-react-17": "2.9.0",
+    "react-swipeable-views-react-18-fix": "0.14.1",
+    "react-to-print": "2.15.1",
+    "react-toastify": "9.1.3",
+    "react-visibility-sensor": "5.1.1",
+    "redux": "4.2.1",
+    "shebang-regex": "3.0.0",
+    "sweetalert2": "11.21.2",
+    "swiper": "9.4.1",
+    "web-vitals": "2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
