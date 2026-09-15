@@ -1,38 +1,60 @@
 @extends('layouts.app')
 @php
     $description = \Illuminate\Support\Str::limit(trim(strip_tags(html_entity_decode($article->abstract ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'))), 160, '.');
-    $authors = trim(strip_tags(html_entity_decode($article->aname ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    $authors = implode(', ', array_column($citationAuthors, 'name'));
     $doi = $article->doi ?? '';
     $scholar = $article->googleScholar ?? '';
     $validScholar = filter_var($scholar, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($scholar, PHP_URL_SCHEME) ?? ''), ['https', 'http']);
 @endphp
 @push('head')
 <link rel="stylesheet" href="{{ asset('read-article.css') }}">
-<link rel="canonical" href="{{ route('article.show', $article->slug) }}">
-<meta name="description" content="{{ $description }}">
 <meta name="author" content="{{ $authors }}">
 <meta name="keywords" content="{{ strip_tags($article->keywords ?? '') }}">
 <meta name="DC.Description" xml:lang="en" content="{{ $description }}">
 <meta name="DC.Identifier.DOI" content="{{ $doi }}">
-<meta name="DC.Identifier.URI" content="{{ route('article.show', $article->slug) }}">
+<meta name="DC.Identifier.URI" content="{{ \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug)) }}">
 <meta name="DC.Language" content="{{ $journal->language ?? 'en' }}">
 <meta name="DC.Source" content="{{ $journal->j_name }}">
 <meta name="DC.Source.ISSN" content="{{ $journal->issn ?? '' }}">
 <meta name="DC.Date.created" content="{{ $article->published_date ?? '' }}">
 <meta name="citation_title" content="{{ $article->name }}">
-<meta name="citation_author" content="{{ $authors }}">
+@foreach($citationAuthors as $citationAuthor)
+<meta name="citation_author" content="{{ $citationAuthor['name'] }}">
+@if($citationAuthor['affiliation'])<meta name="citation_author_institution" content="{{ $citationAuthor['affiliation'] }}">@endif
+<meta name="DC.Creator" content="{{ $citationAuthor['name'] }}">
+@endforeach
+<meta name="DC.Title" content="{{ $article->name }}">
+<meta name="DC.Type" content="Text">
+<meta name="DC.Publisher" content="ISAR Publisher">
+<meta name="citation_publisher" content="ISAR Publisher">
+<meta name="citation_abstract_html_url" content="{{ \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug)) }}">
 <meta name="citation_doi" content="{{ $doi }}">
-<meta name="citation_publication_date" content="{{ $article->published_date ?? '' }}">
+<meta name="citation_publication_date" content="{{ str_replace('-', '/', $article->published_date ?? '') }}">
 <meta name="citation_journal_title" content="{{ $journal->j_name }}">
 <meta name="citation_issn" content="{{ $journal->issn ?? '' }}">
-<meta name="citation_volume" content="{{ $volume->name ?? '' }}">
-<meta name="citation_issue" content="{{ $issue->name ?? '' }}">
-@if(!empty($article->file))<meta name="citation_pdf_url" content="{{ route('article.download', $article->id) }}">@endif
-<meta property="og:type" content="article">
-<meta property="og:title" content="{{ $article->name }}">
-<meta property="og:description" content="{{ $description }}">
-<meta property="og:url" content="{{ route('article.show', $article->slug) }}">
-@if(!empty($journal->photo))<meta property="og:image" content="{{ asset_url('journal/'.$journal->photo) }}">@endif
+<meta name="citation_volume" content="{{ preg_replace('/^volume\s*/i', '', $volume->name ?? '') }}">
+<meta name="citation_issue" content="{{ preg_replace('/^issue\s*/i', '', $issue->name ?? '') }}">
+@php
+    $pages = preg_split('/\s*[-–—]\s*/u', trim($article->page ?? ''));
+    $articleUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug));
+    $pdfUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug).'/fulltext.pdf');
+    $schema = ['@context'=>'https://schema.org', '@type'=>'ScholarlyArticle', '@id'=>$articleUrl, 'url'=>$articleUrl,
+        'mainEntityOfPage'=>$articleUrl, 'headline'=>$article->name, 'name'=>$article->name,
+        'abstract'=>\App\Services\Seo::text($article->abstract), 'keywords'=>\App\Services\Seo::text($article->keywords),
+        'author'=>array_map(fn($a)=>['@type'=>'Person', 'name'=>$a['name']] + ($a['affiliation'] ? ['affiliation'=>['@type'=>'Organization','name'=>$a['affiliation']]] : []), $citationAuthors),
+        'publisher'=>['@type'=>'Organization', 'name'=>'ISAR Publisher'],
+        'isPartOf'=>['@type'=>'PublicationIssue','issueNumber'=>preg_replace('/^issue\s*/i','',$issue->name),
+            'isPartOf'=>['@type'=>'PublicationVolume','volumeNumber'=>preg_replace('/^volume\s*/i','',$volume->name),
+                'isPartOf'=>['@type'=>'Periodical','name'=>$journal->j_name,'issn'=>$journal->issn ?? '']]]];
+    if ($article->published_date) $schema['datePublished'] = $article->published_date;
+    if ($doi) $schema['identifier'] = ['@type'=>'PropertyValue','propertyID'=>'DOI','value'=>$doi];
+    if (!empty($article->file)) $schema['encoding'] = ['@type'=>'MediaObject','encodingFormat'=>'application/pdf','contentUrl'=>$pdfUrl];
+    if (!empty($journal->photo)) $schema['image'] = asset_url('journal/'.$journal->photo);
+@endphp
+@if(!empty($pages[0]))<meta name="citation_firstpage" content="{{ $pages[0] }}">@endif
+@if(!empty($pages[1]))<meta name="citation_lastpage" content="{{ $pages[1] }}">@endif
+@if(!empty($article->file))<meta name="citation_pdf_url" content="{{ $pdfUrl }}">@endif
+<script type="application/ld+json">{!! json_encode($schema, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) !!}</script>
 @endpush
 @section('content')
 <div class="container read-article-layout">

@@ -1,37 +1,59 @@
 <?php
     $description = \Illuminate\Support\Str::limit(trim(strip_tags(html_entity_decode($article->abstract ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'))), 160, '.');
-    $authors = trim(strip_tags(html_entity_decode($article->aname ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    $authors = implode(', ', array_column($citationAuthors, 'name'));
     $doi = $article->doi ?? '';
     $scholar = $article->googleScholar ?? '';
     $validScholar = filter_var($scholar, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($scholar, PHP_URL_SCHEME) ?? ''), ['https', 'http']);
 ?>
 <?php $__env->startPush('head'); ?>
 <link rel="stylesheet" href="<?php echo e(asset('read-article.css')); ?>">
-<link rel="canonical" href="<?php echo e(route('article.show', $article->slug)); ?>">
-<meta name="description" content="<?php echo e($description); ?>">
 <meta name="author" content="<?php echo e($authors); ?>">
 <meta name="keywords" content="<?php echo e(strip_tags($article->keywords ?? '')); ?>">
 <meta name="DC.Description" xml:lang="en" content="<?php echo e($description); ?>">
 <meta name="DC.Identifier.DOI" content="<?php echo e($doi); ?>">
-<meta name="DC.Identifier.URI" content="<?php echo e(route('article.show', $article->slug)); ?>">
+<meta name="DC.Identifier.URI" content="<?php echo e(\App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug))); ?>">
 <meta name="DC.Language" content="<?php echo e($journal->language ?? 'en'); ?>">
 <meta name="DC.Source" content="<?php echo e($journal->j_name); ?>">
 <meta name="DC.Source.ISSN" content="<?php echo e($journal->issn ?? ''); ?>">
 <meta name="DC.Date.created" content="<?php echo e($article->published_date ?? ''); ?>">
 <meta name="citation_title" content="<?php echo e($article->name); ?>">
-<meta name="citation_author" content="<?php echo e($authors); ?>">
+<?php $__currentLoopData = $citationAuthors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $citationAuthor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<meta name="citation_author" content="<?php echo e($citationAuthor['name']); ?>">
+<?php if($citationAuthor['affiliation']): ?><meta name="citation_author_institution" content="<?php echo e($citationAuthor['affiliation']); ?>"><?php endif; ?>
+<meta name="DC.Creator" content="<?php echo e($citationAuthor['name']); ?>">
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+<meta name="DC.Title" content="<?php echo e($article->name); ?>">
+<meta name="DC.Type" content="Text">
+<meta name="DC.Publisher" content="ISAR Publisher">
+<meta name="citation_publisher" content="ISAR Publisher">
+<meta name="citation_abstract_html_url" content="<?php echo e(\App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug))); ?>">
 <meta name="citation_doi" content="<?php echo e($doi); ?>">
-<meta name="citation_publication_date" content="<?php echo e($article->published_date ?? ''); ?>">
+<meta name="citation_publication_date" content="<?php echo e(str_replace('-', '/', $article->published_date ?? '')); ?>">
 <meta name="citation_journal_title" content="<?php echo e($journal->j_name); ?>">
 <meta name="citation_issn" content="<?php echo e($journal->issn ?? ''); ?>">
-<meta name="citation_volume" content="<?php echo e($volume->name ?? ''); ?>">
-<meta name="citation_issue" content="<?php echo e($issue->name ?? ''); ?>">
-<?php if(!empty($article->file)): ?><meta name="citation_pdf_url" content="<?php echo e(route('article.download', $article->id)); ?>"><?php endif; ?>
-<meta property="og:type" content="article">
-<meta property="og:title" content="<?php echo e($article->name); ?>">
-<meta property="og:description" content="<?php echo e($description); ?>">
-<meta property="og:url" content="<?php echo e(route('article.show', $article->slug)); ?>">
-<?php if(!empty($journal->photo)): ?><meta property="og:image" content="<?php echo e(asset_url('journal/'.$journal->photo)); ?>"><?php endif; ?>
+<meta name="citation_volume" content="<?php echo e(preg_replace('/^volume\s*/i', '', $volume->name ?? '')); ?>">
+<meta name="citation_issue" content="<?php echo e(preg_replace('/^issue\s*/i', '', $issue->name ?? '')); ?>">
+<?php
+    $pages = preg_split('/\s*[-–—]\s*/u', trim($article->page ?? ''));
+    $articleUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug));
+    $pdfUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug).'/fulltext.pdf');
+    $schema = ['@context'=>'https://schema.org', '@type'=>'ScholarlyArticle', '@id'=>$articleUrl, 'url'=>$articleUrl,
+        'mainEntityOfPage'=>$articleUrl, 'headline'=>$article->name, 'name'=>$article->name,
+        'abstract'=>\App\Services\Seo::text($article->abstract), 'keywords'=>\App\Services\Seo::text($article->keywords),
+        'author'=>array_map(fn($a)=>['@type'=>'Person', 'name'=>$a['name']] + ($a['affiliation'] ? ['affiliation'=>['@type'=>'Organization','name'=>$a['affiliation']]] : []), $citationAuthors),
+        'publisher'=>['@type'=>'Organization', 'name'=>'ISAR Publisher'],
+        'isPartOf'=>['@type'=>'PublicationIssue','issueNumber'=>preg_replace('/^issue\s*/i','',$issue->name),
+            'isPartOf'=>['@type'=>'PublicationVolume','volumeNumber'=>preg_replace('/^volume\s*/i','',$volume->name),
+                'isPartOf'=>['@type'=>'Periodical','name'=>$journal->j_name,'issn'=>$journal->issn ?? '']]]];
+    if ($article->published_date) $schema['datePublished'] = $article->published_date;
+    if ($doi) $schema['identifier'] = ['@type'=>'PropertyValue','propertyID'=>'DOI','value'=>$doi];
+    if (!empty($article->file)) $schema['encoding'] = ['@type'=>'MediaObject','encodingFormat'=>'application/pdf','contentUrl'=>$pdfUrl];
+    if (!empty($journal->photo)) $schema['image'] = asset_url('journal/'.$journal->photo);
+?>
+<?php if(!empty($pages[0])): ?><meta name="citation_firstpage" content="<?php echo e($pages[0]); ?>"><?php endif; ?>
+<?php if(!empty($pages[1])): ?><meta name="citation_lastpage" content="<?php echo e($pages[1]); ?>"><?php endif; ?>
+<?php if(!empty($article->file)): ?><meta name="citation_pdf_url" content="<?php echo e($pdfUrl); ?>"><?php endif; ?>
+<script type="application/ld+json"><?php echo json_encode($schema, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES); ?></script>
 <?php $__env->stopPush(); ?>
 <?php $__env->startSection('content'); ?>
 <div class="container read-article-layout">
