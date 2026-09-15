@@ -5,8 +5,8 @@ import axios from 'axios';
 // const {token} = AuthUser();
 
 const API = axios.create({
-    // baseURL : "http://127.0.0.1:8000/api/", //local link
-    baseURL : "https://isarpublisher.com/backend/public/api/", //test link
+    baseURL : "http://127.0.0.1:8000/api/", //local link
+    // baseURL : "https://isarpublisher.com/backend/public/api/", //test link
     // baseURL :  process.env.REACT_APP_MAIN_API, //server link
    
     headers :{

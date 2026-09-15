@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use App\Services\PublicSidebarData;
 
 class PublicController extends Controller
 {
@@ -39,10 +40,7 @@ class PublicController extends Controller
     }
     private function globals(): array
     {
-        $a = $this->api('getJournals');
-        $editors = $this->rows('editors_data') ?: ($a['topEditors'] ?? []);
-        $indexings = $this->rows('indexing') ?: ($a['indexings_unique'] ?? []);
-        return ['journals' => $this->rows('journals') ?: ($a['journals'] ?? []), 'topEditors' => $editors, 'globalIndexings' => $indexings, 'editors' => $editors, 'indexings' => $indexings];
+        return app(PublicSidebarData::class)->get();
     }
     public function home()
     {

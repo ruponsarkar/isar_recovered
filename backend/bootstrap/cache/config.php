@@ -1,7 +1,7 @@
 <?php return array (
   'app' => 
   array (
-    'name' => 'Laravel',
+    'name' => 'ISAR Publisher',
     'env' => 'local',
     'debug' => true,
     'url' => 'http://localhost',
@@ -10,7 +10,7 @@
     'locale' => 'en',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
-    'key' => 'base64:BvqQqGTfBm5IxJgqkOPjasMMyQBcg0okhzhKvmc89RY=',
+    'key' => 'base64:oWSINsPqysDK86qJUiolyMmeb65MEaT/TcoZNI/C3nI=',
     'cipher' => 'AES-256-CBC',
     'maintenance' => 
     array (
@@ -98,6 +98,11 @@
     ),
     'guards' => 
     array (
+      'web' => 
+      array (
+        'driver' => 'session',
+        'provider' => 'users',
+      ),
       'api' => 
       array (
         'driver' => 'jwt',
@@ -137,13 +142,13 @@
       'pusher' => 
       array (
         'driver' => 'pusher',
-        'key' => '',
-        'secret' => '',
-        'app_id' => '',
+        'key' => NULL,
+        'secret' => NULL,
+        'app_id' => NULL,
         'options' => 
         array (
           'host' => 'api-mt1.pusher.com',
-          'port' => '443',
+          'port' => 443,
           'scheme' => 'https',
           'encrypted' => true,
           'useTLS' => true,
@@ -229,8 +234,8 @@
       'dynamodb' => 
       array (
         'driver' => 'dynamodb',
-        'key' => '',
-        'secret' => '',
+        'key' => NULL,
+        'secret' => NULL,
         'region' => 'us-east-1',
         'table' => 'cache',
         'endpoint' => NULL,
@@ -240,7 +245,7 @@
         'driver' => 'octane',
       ),
     ),
-    'prefix' => 'laravel_cache_',
+    'prefix' => 'isar_publisher_cache_',
   ),
   'cors' => 
   array (
@@ -279,7 +284,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'u681693884_isar_dev',
+        'database' => 'u476288869_new_isar',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -287,11 +292,11 @@
       array (
         'driver' => 'mysql',
         'url' => NULL,
-        'host' => '193.203.184.83',
+        'host' => '82.25.121.109',
         'port' => '3306',
-        'database' => 'u681693884_isar_dev',
-        'username' => 'u681693884_isar_dev',
-        'password' => '3wM*EdUeM',
+        'database' => 'u476288869_new_isar',
+        'username' => 'u476288869_new_isar',
+        'password' => '9w|BQEHkS',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -299,34 +304,31 @@
         'prefix_indexes' => true,
         'strict' => true,
         'engine' => NULL,
-        'options' => 
-        array (
-        ),
       ),
       'pgsql' => 
       array (
         'driver' => 'pgsql',
         'url' => NULL,
-        'host' => '193.203.184.83',
+        'host' => '82.25.121.109',
         'port' => '3306',
-        'database' => 'u681693884_isar_dev',
-        'username' => 'u681693884_isar_dev',
-        'password' => '3wM*EdUeM',
+        'database' => 'u476288869_new_isar',
+        'username' => 'u476288869_new_isar',
+        'password' => '9w|BQEHkS',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
-        'search_path' => 'public',
+        'schema' => 'public',
         'sslmode' => 'prefer',
       ),
       'sqlsrv' => 
       array (
         'driver' => 'sqlsrv',
         'url' => NULL,
-        'host' => '193.203.184.83',
+        'host' => '82.25.121.109',
         'port' => '3306',
-        'database' => 'u681693884_isar_dev',
-        'username' => 'u681693884_isar_dev',
-        'password' => '3wM*EdUeM',
+        'database' => 'u476288869_new_isar',
+        'username' => 'u476288869_new_isar',
+        'password' => '9w|BQEHkS',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -339,7 +341,7 @@
       'options' => 
       array (
         'cluster' => 'redis',
-        'prefix' => 'laravel_database_',
+        'prefix' => 'isar_publisher_database_',
       ),
       'default' => 
       array (
@@ -358,243 +360,6 @@
         'password' => NULL,
         'port' => '6379',
         'database' => '1',
-      ),
-    ),
-  ),
-  'filesystems' => 
-  array (
-    'default' => 'local',
-    'disks' => 
-    array (
-      'local' => 
-      array (
-        'driver' => 'local',
-        'root' => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/storage/app',
-        'throw' => false,
-      ),
-      'public' => 
-      array (
-        'driver' => 'local',
-        'root' => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/storage/app/public',
-        'url' => 'http://localhost/storage',
-        'visibility' => 'public',
-        'throw' => false,
-      ),
-      's3' => 
-      array (
-        'driver' => 's3',
-        'key' => '',
-        'secret' => '',
-        'region' => 'us-east-1',
-        'bucket' => '',
-        'url' => NULL,
-        'endpoint' => NULL,
-        'use_path_style_endpoint' => false,
-        'throw' => false,
-      ),
-    ),
-    'links' => 
-    array (
-      '/Users/ruponsarkar/Documents/projects/isar/isar/backend/public/storage' => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/storage/app/public',
-    ),
-  ),
-  'hashing' => 
-  array (
-    'driver' => 'bcrypt',
-    'bcrypt' => 
-    array (
-      'rounds' => 10,
-    ),
-    'argon' => 
-    array (
-      'memory' => 65536,
-      'threads' => 1,
-      'time' => 4,
-    ),
-  ),
-  'jwt' => 
-  array (
-    'secret' => '8AMU2HtiZQ7850SBLZXVsqTrCZKBg4JxoBT8SslOzqnxGiiWG71sjkvFOaL9RZHp',
-    'keys' => 
-    array (
-      'public' => NULL,
-      'private' => NULL,
-      'passphrase' => NULL,
-    ),
-    'ttl' => 60,
-    'refresh_ttl' => 20160,
-    'algo' => 'HS256',
-    'required_claims' => 
-    array (
-      0 => 'iss',
-      1 => 'iat',
-      2 => 'exp',
-      3 => 'nbf',
-      4 => 'sub',
-      5 => 'jti',
-    ),
-    'persistent_claims' => 
-    array (
-    ),
-    'lock_subject' => true,
-    'leeway' => 0,
-    'blacklist_enabled' => true,
-    'blacklist_grace_period' => 0,
-    'decrypt_cookies' => false,
-    'providers' => 
-    array (
-      'jwt' => 'Tymon\\JWTAuth\\Providers\\JWT\\Lcobucci',
-      'auth' => 'Tymon\\JWTAuth\\Providers\\Auth\\Illuminate',
-      'storage' => 'Tymon\\JWTAuth\\Providers\\Storage\\Illuminate',
-    ),
-  ),
-  'logging' => 
-  array (
-    'default' => 'stack',
-    'deprecations' => 
-    array (
-      'channel' => NULL,
-      'trace' => false,
-    ),
-    'channels' => 
-    array (
-      'stack' => 
-      array (
-        'driver' => 'stack',
-        'channels' => 
-        array (
-          0 => 'single',
-        ),
-        'ignore_exceptions' => false,
-      ),
-      'single' => 
-      array (
-        'driver' => 'single',
-        'path' => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/storage/logs/laravel.log',
-        'level' => 'debug',
-      ),
-      'daily' => 
-      array (
-        'driver' => 'daily',
-        'path' => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/storage/logs/laravel.log',
-        'level' => 'debug',
-        'days' => 14,
-      ),
-      'slack' => 
-      array (
-        'driver' => 'slack',
-        'url' => NULL,
-        'username' => 'Laravel Log',
-        'emoji' => ':boom:',
-        'level' => 'debug',
-      ),
-      'papertrail' => 
-      array (
-        'driver' => 'monolog',
-        'level' => 'debug',
-        'handler' => 'Monolog\\Handler\\SyslogUdpHandler',
-        'handler_with' => 
-        array (
-          'host' => NULL,
-          'port' => NULL,
-          'connectionString' => 'tls://:',
-        ),
-      ),
-      'stderr' => 
-      array (
-        'driver' => 'monolog',
-        'level' => 'debug',
-        'handler' => 'Monolog\\Handler\\StreamHandler',
-        'formatter' => NULL,
-        'with' => 
-        array (
-          'stream' => 'php://stderr',
-        ),
-      ),
-      'syslog' => 
-      array (
-        'driver' => 'syslog',
-        'level' => 'debug',
-      ),
-      'errorlog' => 
-      array (
-        'driver' => 'errorlog',
-        'level' => 'debug',
-      ),
-      'null' => 
-      array (
-        'driver' => 'monolog',
-        'handler' => 'Monolog\\Handler\\NullHandler',
-      ),
-      'emergency' => 
-      array (
-        'path' => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/storage/logs/laravel.log',
-      ),
-    ),
-  ),
-  'mail' => 
-  array (
-    'default' => 'smtp',
-    'mailers' => 
-    array (
-      'smtp' => 
-      array (
-        'transport' => 'smtp',
-        'host' => 'mailpit',
-        'port' => '1025',
-        'encryption' => NULL,
-        'username' => NULL,
-        'password' => NULL,
-        'timeout' => NULL,
-        'local_domain' => NULL,
-      ),
-      'ses' => 
-      array (
-        'transport' => 'ses',
-      ),
-      'mailgun' => 
-      array (
-        'transport' => 'mailgun',
-      ),
-      'postmark' => 
-      array (
-        'transport' => 'postmark',
-      ),
-      'sendmail' => 
-      array (
-        'transport' => 'sendmail',
-        'path' => '/usr/sbin/sendmail -bs -i',
-      ),
-      'log' => 
-      array (
-        'transport' => 'log',
-        'channel' => NULL,
-      ),
-      'array' => 
-      array (
-        'transport' => 'array',
-      ),
-      'failover' => 
-      array (
-        'transport' => 'failover',
-        'mailers' => 
-        array (
-          0 => 'smtp',
-          1 => 'log',
-        ),
-      ),
-    ),
-    'from' => 
-    array (
-      'address' => 'hello@example.com',
-      'name' => 'Laravel',
-    ),
-    'markdown' => 
-    array (
-      'theme' => 'default',
-      'paths' => 
-      array (
-        0 => '/Users/ruponsarkar/Documents/projects/isar/isar/backend/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -627,8 +392,8 @@
       'sqs' => 
       array (
         'driver' => 'sqs',
-        'key' => '',
-        'secret' => '',
+        'key' => NULL,
+        'secret' => NULL,
         'prefix' => 'https://sqs.us-east-1.amazonaws.com/your-account-id',
         'queue' => 'default',
         'suffix' => NULL,
@@ -675,26 +440,6 @@
       'encrypt_cookies' => 'App\\Http\\Middleware\\EncryptCookies',
     ),
   ),
-  'services' => 
-  array (
-    'mailgun' => 
-    array (
-      'domain' => NULL,
-      'secret' => NULL,
-      'endpoint' => 'api.mailgun.net',
-      'scheme' => 'https',
-    ),
-    'postmark' => 
-    array (
-      'token' => NULL,
-    ),
-    'ses' => 
-    array (
-      'key' => '',
-      'secret' => '',
-      'region' => 'us-east-1',
-    ),
-  ),
   'session' => 
   array (
     'driver' => 'file',
@@ -710,7 +455,7 @@
       0 => 2,
       1 => 100,
     ),
-    'cookie' => 'laravel_session',
+    'cookie' => 'isar_publisher_session',
     'path' => '/',
     'domain' => NULL,
     'secure' => NULL,
@@ -917,6 +662,42 @@
       1 => 'Spatie\\LaravelIgnition\\Recorders\\JobRecorder\\JobRecorder',
       2 => 'Spatie\\LaravelIgnition\\Recorders\\LogRecorder\\LogRecorder',
       3 => 'Spatie\\LaravelIgnition\\Recorders\\QueryRecorder\\QueryRecorder',
+    ),
+  ),
+  'jwt' => 
+  array (
+    'secret' => 'fwgBagxnZmbgJ7e1OrqBybz08BSMb6kgj8YvlhtWShoy5zl7jDRV3njpWmSTuz5ec3AvpZ3J72c4LKiolyGKwNBBmI41jIGZqy7HoTKHgTG1FiFt8cHn23dMNTMiV7We',
+    'keys' => 
+    array (
+      'public' => NULL,
+      'private' => NULL,
+      'passphrase' => NULL,
+    ),
+    'ttl' => 60,
+    'refresh_ttl' => 20160,
+    'algo' => 'HS256',
+    'required_claims' => 
+    array (
+      0 => 'iss',
+      1 => 'iat',
+      2 => 'exp',
+      3 => 'nbf',
+      4 => 'sub',
+      5 => 'jti',
+    ),
+    'persistent_claims' => 
+    array (
+    ),
+    'lock_subject' => true,
+    'leeway' => 0,
+    'blacklist_enabled' => true,
+    'blacklist_grace_period' => 0,
+    'decrypt_cookies' => false,
+    'providers' => 
+    array (
+      'jwt' => 'Tymon\\JWTAuth\\Providers\\JWT\\Lcobucci',
+      'auth' => 'Tymon\\JWTAuth\\Providers\\Auth\\Illuminate',
+      'storage' => 'Tymon\\JWTAuth\\Providers\\Storage\\Illuminate',
     ),
   ),
   'tinker' => 

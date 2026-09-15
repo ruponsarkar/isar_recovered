@@ -25,6 +25,12 @@ Route::post('/joinEditor', [ApplicationController::class, 'submit'])->defaults('
 Route::get('/action', [PublicController::class, 'contact'])->name('contact');
 Route::get('/Payment', [PaymentController::class, 'index'])->name('payment');
 Route::post('/PaymentDetails', [PaymentController::class, 'details'])->name('payment.details');
-Route::get('/PaymentDetails', [PaymentController::class, 'index']);
-Route::post('/pay/order', [PaymentController::class, 'order'])->name('pay.order');
-Route::post('/pay', [PaymentController::class, 'success'])->name('pay');
+Route::get('/PaymentDetails', [PaymentController::class, 'showDetails'])->name('payment.details.show');
+Route::post('/pay/razorpay/order', [PaymentController::class, 'razorpayOrder'])->name('pay.razorpay.order');
+Route::post('/pay/razorpay/success', [PaymentController::class, 'razorpaySuccess'])->name('pay.razorpay.success');
+Route::post('/pay/razorpay/abandon', [PaymentController::class, 'razorpayAbandon'])->name('pay.razorpay.abandon');
+Route::post('/pay/paypal/order', [PaymentController::class, 'paypalOrder'])->name('pay.paypal.order');
+Route::post('/pay/paypal/capture', [PaymentController::class, 'paypalCapture'])->name('pay.paypal.capture');
+Route::get('/pay/result/{reference}', [PaymentController::class, 'result'])->name('payment.result');
+Route::post('/pay/order', [PaymentController::class, 'razorpayOrder'])->name('pay.order');
+Route::post('/pay', [PaymentController::class, 'razorpaySuccess'])->name('pay');

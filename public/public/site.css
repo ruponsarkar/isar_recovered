@@ -1,1 +1,384 @@
-:root{--teal:#408e91;--blue:#180ed7;--ink:#17343c}*{box-sizing:border-box}body{margin:0;background:#d8d8d8;color:#263238;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px}.social-strip{height:31px;background:#6c757d;text-align:right;padding:5px 22px}.social-strip a{color:#fff;margin-left:13px}.masthead{min-height:106px;display:flex;align-items:center;padding:7px 20px;background:url('/assets/logobg.jpg') center/cover}.masthead img{width:150px;border-radius:50%;box-shadow:0 0 4px #1118}.masthead h1{color:#fff;text-shadow:2px 2px #154eb3;font-size:1.52rem;font-weight:800;margin:0 24px}.isar-nav{background:#408e91;border-bottom:5px solid #100b0b}.isar-nav .nav-link{font-weight:700;color:#fff!important}.dropdown-item{font-size:.86rem}.manu-btn{position:fixed;right:10px;top:144px;z-index:1040;border-radius:30px;padding:7px 17px;color:#fff;background:linear-gradient(90deg,#58c9de,#10b9e6,#1221c1);font-weight:800;box-shadow:0 0 13px #070386;animation:glow 2.3s infinite}.manu-btn:hover{color:#c8ffd6}.mobile-submit{display:none}.section-title{background:var(--teal);color:#fff;padding:10px 14px;border-bottom:5px solid var(--blue);font-size:1rem;font-weight:700;text-transform:uppercase}.paper-card{border:0;background:#fff;box-shadow:0 1px 4px #1b252629;margin-bottom:12px}.paper-body{padding:18px}.hero-all-link{color:#fff;font-size:.75rem;text-decoration:none}.journal-carousel-track{display:flex;align-items:stretch;gap:18px;padding:2px 4px}.journal-hero-cover{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;text-align:center;color:var(--ink);font-size:.69rem;font-weight:700;text-decoration:none}.journal-hero-cover img{width:100%;height:174px;object-fit:contain;background:#fff;filter:drop-shadow(0 7px 5px #193d4622);transition:transform .3s}.journal-hero-cover:hover img{transform:translateY(-6px)}.journal-hero-cover span{padding:7px 4px;line-height:1.25}.hero-fallback-note{border-top:1px solid #dce7e7;margin-top:10px;padding:10px 3px;color:#557079;font-size:.84rem}.hero-fallback-note a{color:var(--teal);font-weight:700}.narrative-kicker{color:var(--teal);font-size:.77rem;letter-spacing:.12em;font-weight:800;margin-bottom:10px}.narrative-heading{color:#17343c;font-size:.92rem;font-weight:800;margin:14px 0 4px}.narrative-card p{line-height:1.7;margin-bottom:12px}.aim-card .paper-body{line-height:1.75;border-left:4px solid #8568fb}.side-card{background:#fff;margin-bottom:12px;border:1px solid #e1e1e1}.side-card a{display:block;padding:8px 13px;border-bottom:1px solid #eee;color:var(--ink)}.metric-band{background:linear-gradient(#000b,#000b),url('/assets/bg1.jpg') center/cover fixed;color:white;padding:48px 0}.metric-intro{text-align:center;margin:0 auto 20px}.metric-intro span{text-transform:uppercase;letter-spacing:.16em;font-size:.76rem;color:#aee3e3;font-weight:800}.metric-intro p{margin:4px 0;font-size:1.15rem}.metric{border:1px dashed #ffffff99;text-align:center;padding:20px 8px;height:100%}.metric i{font-size:2.5rem}.metric strong{display:block;font-size:2.4rem}.journal-cover{max-height:245px;object-fit:contain;width:100%}.journal-name{color:#198754;font-weight:800}.article{border:1px solid #e4e4e4;background:#f8f9fa;padding:15px;margin:10px}.editorial-article{border-left:3px solid #71a9ab;background:#fbfcfc;padding:17px}.article-topline{display:flex;justify-content:space-between;align-items:center}.article-count{font-size:.78rem;color:#6c757d}.article-title{color:#17343c;font-weight:800}.article-meta{display:flex;gap:18px;flex-wrap:wrap;color:#53656b;margin-top:7px;font-size:.86rem}.article-doi{font-size:.82rem;margin-top:5px}.article-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.abstract-box{border-top:1px solid #dce7e7;margin-top:11px;padding:11px 2px;line-height:1.55}.policy-hero{background:linear-gradient(110deg,#408e91,#176073);padding:32px;color:#fff}.policy-copy{font-size:1.04rem;line-height:1.8}.form-label{font-weight:650}.btn-isar{background:var(--teal);border-color:var(--teal);color:#fff}.btn-isar:hover{background:#286c70;color:#fff}.footer{color:#dcebed;background:#193d46}.footer-logo{width:80px;border-radius:50%;float:left;margin:0 12px 8px 0}.footer a{display:block;color:#dcebed;margin:4px 0}.copyright{text-align:center;padding:10px;background:#102c33;font-size:.82rem}.empty{border:1px dashed #abb9bc;padding:32px;text-align:center;background:#f8fafb;color:#5d7075}@keyframes glow{50%{box-shadow:0 0 23px #0f0137}}@media(max-width:991px){.masthead img{width:100px}.masthead h1{font-size:1rem;margin-left:14px}.isar-nav .nav-link{color:#17343c!important}.manu-btn{display:none}.mobile-submit{display:block!important;margin:8px 0;background:#1c87c9;border-radius:5px}.mobile-submit .nav-link{color:#fff!important;padding:8px 12px!important}.journal-carousel-track{gap:10px}.journal-hero-cover img{height:142px}}@media(max-width:575px){.masthead{min-height:78px;padding:5px}.masthead h1{font-size:.78rem}.metric-band{background-attachment:scroll}.journal-carousel-track{overflow-x:auto;gap:8px;padding-bottom:5px}.journal-hero-cover{min-width:42%}.journal-hero-cover img{height:135px}.article-meta{gap:6px;flex-direction:column}.article-actions .btn{font-size:.75rem}}
+:root {
+  --teal: #408e91;
+  --blue: #180ed7;
+  --ink: #17343c;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #d8d8d8;
+  color: #263238;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+}
+.social-strip {
+  height: 31px;
+  background: #6c757d;
+  text-align: right;
+  padding: 5px 22px;
+}
+.social-strip a {
+  color: #fff;
+  margin-left: 13px;
+}
+.masthead {
+  min-height: 106px;
+  display: flex;
+  align-items: center;
+  padding: 7px 20px;
+  background: url("/assets/logobg.jpg") center/cover;
+}
+.masthead img {
+  width: 150px;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #1118;
+}
+.masthead h1 {
+  color: #fff;
+  text-shadow: 2px 2px #154eb3;
+  font-size: 1.52rem;
+  font-weight: 800;
+  margin: 0 24px;
+}
+.isar-nav {
+  background: #408e91;
+  border-bottom: 5px solid #100b0b;
+}
+.isar-nav .nav-link {
+  font-weight: 700;
+  color: #fff !important;
+}
+.dropdown-item {
+  font-size: 0.86rem;
+}
+.manu-btn {
+  position: fixed;
+  right: 10px;
+  top: 144px;
+  z-index: 1040;
+  border-radius: 30px;
+  padding: 7px 17px;
+  color: #fff;
+  background: linear-gradient(90deg, #58c9de, #10b9e6, #1221c1);
+  font-weight: 800;
+  box-shadow: 0 0 13px #070386;
+  animation: glow 2.3s infinite;
+}
+.manu-btn:hover {
+  color: #c8ffd6;
+}
+.mobile-submit {
+  display: none;
+}
+.section-title {
+  background: var(--teal);
+  color: #fff;
+  padding: 10px 14px;
+  border-bottom: 5px solid var(--blue);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.paper-card {
+  border: 0;
+  background: #fff;
+  box-shadow: 0 1px 4px #1b252629;
+  margin-bottom: 12px;
+}
+.paper-body {
+  padding: 18px;
+}
+.hero-all-link {
+  color: #fff;
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+.journal-carousel-track {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  padding: 2px 4px;
+}
+.journal-hero-cover {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  color: var(--ink);
+  font-size: 0.69rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.journal-hero-cover img {
+  width: 100%;
+  height: 174px;
+  object-fit: contain;
+  background: #fff;
+  filter: drop-shadow(0 7px 5px #193d4622);
+  transition: transform 0.3s;
+}
+.journal-hero-cover:hover img {
+  transform: translateY(-6px);
+}
+.journal-hero-cover span {
+  padding: 7px 4px;
+  line-height: 1.25;
+}
+.hero-fallback-note {
+  border-top: 1px solid #dce7e7;
+  margin-top: 10px;
+  padding: 10px 3px;
+  color: #557079;
+  font-size: 0.84rem;
+}
+.hero-fallback-note a {
+  color: var(--teal);
+  font-weight: 700;
+}
+.narrative-kicker {
+  color: var(--teal);
+  font-size: 0.77rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.narrative-heading {
+  color: #17343c;
+  font-size: 0.92rem;
+  font-weight: 800;
+  margin: 14px 0 4px;
+}
+.narrative-card p {
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.aim-card .paper-body {
+  line-height: 1.75;
+  border-left: 4px solid #8568fb;
+}
+.side-card {
+  background: #fff;
+  margin-bottom: 12px;
+  border: 1px solid #e1e1e1;
+}
+.side-card a {
+  display: block;
+  padding: 8px 13px;
+  border-bottom: 1px solid #eee;
+  color: var(--ink);
+}
+.metric-band {
+  background:
+    linear-gradient(#000b, #000b),
+    url("/assets/bg1.jpg") center/cover fixed;
+  color: white;
+  padding: 48px 0;
+}
+.metric-intro {
+  text-align: center;
+  margin: 0 auto 20px;
+}
+.metric-intro span {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.76rem;
+  color: #aee3e3;
+  font-weight: 800;
+}
+.metric-intro p {
+  margin: 4px 0;
+  font-size: 1.15rem;
+}
+.metric {
+  border: 1px dashed #ffffff99;
+  text-align: center;
+  padding: 20px 8px;
+  height: 100%;
+}
+.metric i {
+  font-size: 2.5rem;
+}
+.metric strong {
+  display: block;
+  font-size: 2.4rem;
+}
+.journal-cover {
+  max-height: 245px;
+  object-fit: contain;
+  width: 100%;
+}
+.journal-name {
+  color: #198754;
+  font-weight: 800;
+}
+.article {
+  border: 1px solid #e4e4e4;
+  background: #f8f9fa;
+  padding: 15px;
+  margin: 10px;
+}
+.editorial-article {
+  border-left: 3px solid #71a9ab;
+  background: #fbfcfc;
+  padding: 17px;
+}
+.article-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.article-count {
+  font-size: 0.78rem;
+  color: #6c757d;
+}
+.article-title {
+  color: #17343c;
+  font-weight: 800;
+}
+.article-meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  color: #53656b;
+  margin-top: 7px;
+  font-size: 0.86rem;
+}
+.article-doi {
+  font-size: 0.82rem;
+  margin-top: 5px;
+}
+.article-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.abstract-box {
+  border-top: 1px solid #dce7e7;
+  margin-top: 11px;
+  padding: 11px 2px;
+  line-height: 1.55;
+}
+.policy-hero {
+  background: linear-gradient(110deg, #408e91, #176073);
+  padding: 32px;
+  color: #fff;
+}
+.policy-copy {
+  font-size: 1.04rem;
+  line-height: 1.8;
+}
+.form-label {
+  font-weight: 650;
+}
+.btn-isar {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fff;
+}
+.btn-isar:hover {
+  background: #286c70;
+  color: #fff;
+}
+.footer {
+  color: #dcebed;
+  background: #193d46;
+}
+.footer-logo {
+  width: 80px;
+  border-radius: 50%;
+  float: left;
+  margin: 0 12px 8px 0;
+}
+.footer a {
+  display: block;
+  color: #dcebed;
+  margin: 4px 0;
+}
+.copyright {
+  text-align: center;
+  padding: 10px;
+  background: #102c33;
+  font-size: 0.82rem;
+}
+.empty {
+  border: 1px dashed #abb9bc;
+  padding: 32px;
+  text-align: center;
+  background: #f8fafb;
+  color: #5d7075;
+}
+@keyframes glow {
+  50% {
+    box-shadow: 0 0 23px #0f0137;
+  }
+}
+@media (max-width: 991px) {
+  .masthead img {
+    width: 100px;
+  }
+  .masthead h1 {
+    font-size: 1rem;
+    margin-left: 14px;
+  }
+  .isar-nav .nav-link {
+    color: #17343c !important;
+  }
+  .manu-btn {
+    display: none;
+  }
+  .mobile-submit {
+    display: block !important;
+    margin: 8px 0;
+    background: #1c87c9;
+    border-radius: 5px;
+  }
+  .mobile-submit .nav-link {
+    color: #fff !important;
+    padding: 8px 12px !important;
+  }
+  .journal-carousel-track {
+    gap: 10px;
+  }
+  .journal-hero-cover img {
+    height: 142px;
+  }
+}
+@media (max-width: 575px) {
+  .masthead {
+    min-height: 78px;
+    padding: 5px;
+  }
+  .masthead h1 {
+    font-size: 0.78rem;
+  }
+  .metric-band {
+    background-attachment: scroll;
+  }
+  .journal-carousel-track {
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 5px;
+  }
+  .journal-hero-cover {
+    min-width: 42%;
+  }
+  .journal-hero-cover img {
+    height: 135px;
+  }
+  .article-meta {
+    gap: 6px;
+    flex-direction: column;
+  }
+  .article-actions .btn {
+    font-size: 0.75rem;
+  }
+}
+
+a{
+    text-decoration: none;
+}
