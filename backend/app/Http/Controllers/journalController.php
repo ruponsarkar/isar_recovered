@@ -318,7 +318,7 @@ class journalController extends Controller
     function getArticle($id)
     {
 
-        $article = article::where('i_id', $id)
+        $article = article::with('authors')->where('i_id', $id)
             ->orderBy('id', 'DESC')
             ->where('status', 1)
             ->get();
@@ -336,6 +336,31 @@ class journalController extends Controller
 
     function postArticle(Request $request)
     {
+        $dates = $request->validate([
+            'received'=>'sometimes|nullable|date_format:Y-m-d',
+            'revised'=>'sometimes|nullable|date_format:Y-m-d',
+            'accepted'=>'sometimes|nullable|date_format:Y-m-d',
+        ]);
+        $authors = null;
+        if ($request->has('authors')) {
+            $decoded = is_array($request->authors) ? $request->authors : json_decode($request->authors, true);
+            $request->merge(['authors'=>$decoded]);
+            $validated = $request->validate([
+                'authors'=>'present|array|max:100',
+                'authors.*.first_name'=>'required|string|max:255',
+                'authors.*.last_name'=>'nullable|string|max:255',
+                'authors.*.designation'=>'nullable|string|max:2000',
+                'authors.*.affiliation'=>'required|string|max:4000',
+                'authors.*.corresponding'=>'required|boolean',
+                'authors.*.super_no'=>'required|integer|min:1|max:9999',
+            ]);
+            $authors = $validated['authors'];
+            if ($authors) $request->merge(\App\Services\ArticleAuthorFormatter::format($authors));
+            else $request->validate(['aname'=>'required|string']);
+        }
+
+        return DB::transaction(function () use ($request, $authors, $dates) {
+        $file = null;
 
         if (!$request->id || $request->id == 'undefined') {
             // new add 
@@ -364,9 +389,12 @@ class journalController extends Controller
             $save->i_id = $request->i_id;
 
             $save->save();
+            $articleId = $save->id;
 
 
         } else {
+            $articleId = $request->id;
+            abort_unless(DB::table('article')->where('id', $articleId)->exists(), 404);
 
             // return "Update" . $request->id;
 
@@ -404,7 +432,20 @@ class journalController extends Controller
             }
         }
 
+        if ($dates) DB::table('article')->where('id', $articleId)->update($dates);
+        if ($authors !== null) {
+            DB::table('article_authors')->where('article_id', $articleId)->delete();
+            foreach ($authors as $position => $author) {
+                \App\Models\ArticleAuthor::create([
+                    'article_id'=>$articleId,
+                    'first_name'=>$author['first_name'], 'last_name'=>$author['last_name'] ?? null,
+                    'designation'=>$author['designation'] ?? null, 'affiliation'=>$author['affiliation'],
+                    'corresponding'=>$author['corresponding'], 'super_no'=>$author['super_no'], 'position'=>$position,
+                ]);
+            }
+        }
         return response()->json(['message' => 'Data saved', 'status' => 200]);
+        });
     }
 
 

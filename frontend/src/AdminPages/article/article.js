@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import AddArticleForm from '../form/addArticleForm';
+import AuthorText from '../../components/common/AuthorText';
 import axios from 'axios';
 import Card from '@mui/material/Card';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -25,13 +26,15 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
-    maxHeight: '90vh',        // 👈 important
-    overflowY: 'auto',        // 👈 enable vertical scroll
+    width: 'calc(100% - 24px)',
+    maxWidth: 880,
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    boxSizing: 'border-box',
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: 24,
-    p: 4,
+    p: { xs: 2, sm: 3 },
 };
 
 
@@ -67,6 +70,9 @@ const Article = () => {
         abstract: '',
         googleScholar: '',
         published_date: '',
+        received: '',
+        revised: '',
+        accepted: '',
         keywords: '',
 
     })
@@ -134,7 +140,11 @@ const Article = () => {
 
     const columns = [
         { field: 'name', headerName: 'Title', width: 300 },
-        { field: 'aname', headerName: 'Author', width: 300 },
+        { field: 'aname', headerName: 'Author', width: 300, renderCell: params => <AuthorText value={params.value} /> },
+        { field: 'designation', headerName: 'Affiliations', width: 300, renderCell: params => <AuthorText value={params.value} /> },
+        { field: 'received', headerName: 'Received', width: 120 },
+        { field: 'revised', headerName: 'Revised', width: 120 },
+        { field: 'accepted', headerName: 'Accepted', width: 120 },
         { field: 'file', headerName: 'Article', width: 100 },
         {
             field: 'id', headerName: 'Action', width: 100,
@@ -182,11 +192,13 @@ const Article = () => {
         formData.append('name', articleData.name);
         formData.append('aname', articleData.aname);
         formData.append('designation', articleData.designation);
+        formData.append('authors', JSON.stringify(articleData.authors || []));
         formData.append('doi', articleData.doi);
         formData.append('page', articleData.page);
         formData.append('abstract', articleData.abstract);
         formData.append('googleScholar', articleData.googleScholar);
         formData.append('published_date', articleData.published_date);
+        ['received', 'revised', 'accepted'].forEach(field => formData.append(field, articleData[field] || ''));
         formData.append('keywords', articleData.keywords);
         formData.append('file', articleFile);
         formData.append('i_id', params.id);
@@ -244,7 +256,7 @@ const Article = () => {
 
     const handleOpenArticle = () => {
         handleOpen();
-        setArticleData({});
+        setArticleData({ authors: [{ first_name: '', last_name: '', designation: '', affiliation: '', corresponding: false, super_no: 1 }] });
     }
 
 
@@ -262,13 +274,15 @@ const Article = () => {
                         open={open}
                         onClose={handleClose}
                         aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
                     >
                         <Box sx={style}>
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                {/* Text in a modal */}
-                            </Typography>
-                            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, mb: 3 }}>
+                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                    {articleData.id ? 'Edit Article' : 'Add Article'}
+                                </Typography>
+                                <Button onClick={handleClose} aria-label="Close article form">Close</Button>
+                            </Box>
+                            <Box>
 
                                 <AddArticleForm articleData={articleData} handleAddInput={handleAddInput} handleFile={handleFile} />
 
@@ -276,7 +290,7 @@ const Article = () => {
                                     <button className='btn btn-success' onClick={saveArticle} disabled={load ? 'disabled' : ''}>Save Article</button>
                                 </div>
 
-                            </Typography>
+                            </Box>
                         </Box>
                     </Modal>
                 </div>

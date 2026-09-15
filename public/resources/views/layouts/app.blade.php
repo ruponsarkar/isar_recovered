@@ -10,6 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('site.css') }}" rel="stylesheet">
     <link href="{{ asset('journal.css') }}" rel="stylesheet">
+    @stack('head')
 </head>
 
 <body>@include('partials.nav')<a class="manu-btn" href="{{ route('manuscript') }}"><i

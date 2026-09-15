@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
+import AuthorText from '../common/AuthorText';
 
 import PersonIcon from "@mui/icons-material/Person";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
@@ -98,13 +99,13 @@ const LatestArticle = (props) => {
 
                       {el.aname && (
                         <div className="col-12">
-                          <PersonIcon fontSize="small" /> {el.aname}
+                          <PersonIcon fontSize="small" /> <AuthorText value={el.aname} />
                         </div>
                       )}
 
                       {el.designation && (
                         <div className="col-12">
-                          <BookmarksIcon fontSize="small" /> {el.designation}
+                          <BookmarksIcon fontSize="small" /> <AuthorText value={el.designation} />
                         </div>
                       )}
 

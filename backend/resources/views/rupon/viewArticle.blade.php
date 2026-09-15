@@ -263,12 +263,18 @@
 
                     <div class="pb-2">
                         <span>Author: </span>
-                        <strong>{{$article->aname}}</strong>
+                        <strong>{{ \App\Services\ArticleAuthorFormatter::render($article->aname) }}</strong>
+                        <div>{{ \App\Services\ArticleAuthorFormatter::render($article->designation ?? '') }}</div>
                     </div>
                     <div class="pb-2">
                         <span>Published Date: </span>
                         <strong>{{$article->published_date}}</strong>
                     </div>
+                    @foreach(['received'=>'Received', 'revised'=>'Revised', 'accepted'=>'Accepted'] as $field=>$label)
+                        @if(!empty($article->$field))
+                            <div class="pb-2"><span>{{ $label }}: </span><strong>{{ $article->$field }}</strong></div>
+                        @endif
+                    @endforeach
                     <div class="pb-2">
                         <span>GoogleScholar: </span>
                         <strong

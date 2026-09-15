@@ -10,6 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="<?php echo e(asset('site.css')); ?>" rel="stylesheet">
     <link href="<?php echo e(asset('journal.css')); ?>" rel="stylesheet">
+    <?php echo $__env->yieldPushContent('head'); ?>
 </head>
 
 <body><?php echo $__env->make('partials.nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><a class="manu-btn" href="<?php echo e(route('manuscript')); ?>"><i

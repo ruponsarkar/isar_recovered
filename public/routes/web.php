@@ -3,12 +3,15 @@
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\ReadArticleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/AllJournals', [PublicController::class, 'journals'])->name('journals');
 Route::get('/journal/{journal}', [PublicController::class, 'journal'])->name('journal');
 Route::get('/Articles/{Articles}', [PublicController::class, 'articles'])->name('articles');
+Route::get('/viewArticle/{slug}', [ReadArticleController::class, 'show'])->name('article.show');
+Route::get('/download/{id}', [ReadArticleController::class, 'download'])->whereNumber('id')->name('article.download');
 foreach (['open-access-policy','CopyrightPolicyPage','author-instruction','processingFees','reviewProcess','aboutUs','RefundPolicy','PublicationFee','ReviewGuidlines','EditorGuidlines','EthicsPolicies','Representatives','GenerativeAIPolicy'] as $page) Route::get('/'.$page, fn () => app(PublicController::class)->policy($page))->name('policy.'.$page);
 Route::get('/manuscript', [ApplicationController::class, 'form'])->defaults('type','manuscript')->name('manuscript');
 Route::post('/manuscript', [ApplicationController::class, 'submit'])->defaults('type','manuscript')->name('manuscript.submit');

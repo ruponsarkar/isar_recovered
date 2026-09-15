@@ -1,0 +1,28 @@
+.article-editor-form { display: grid; gap: 20px; color: #253346; min-width: 0; }
+.article-editor-form .article-field { min-width: 0; }
+.article-editor-form .article-field > label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 600; }
+.article-editor-form .form-control { width: 100%; min-width: 0; min-height: 42px; color: #253346; background: #fff; border-color: #c8d0da; font-size: 15px; }
+.article-editor-form textarea.form-control { resize: vertical; }
+.article-editor-form .form-control:focus { border-color: #0d6efd; box-shadow: 0 0 0 3px rgba(13, 110, 253, .15); }
+.article-authors { min-width: 0; }
+.article-authors-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.article-authors-heading h3 { margin: 0; font-size: 18px; font-weight: 600; }
+.article-authors-heading span, .article-form-help { color: #536274; font-size: 13px; }
+.article-form-help { margin: 8px 0 16px; line-height: 1.5; }
+.article-author-card { min-width: 0; padding: 18px; margin: 0 0 16px; border: 1px solid #d4dce5; border-left: 3px solid #0d6efd; border-radius: 6px; background: #f8fafc; }
+.article-author-card legend { float: none; width: auto; margin: 0; padding: 0 6px; font-size: 14px; font-weight: 700; }
+.article-author-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.article-field-full { grid-column: 1 / -1; }
+.article-author-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+.article-corresponding { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; cursor: pointer; }
+.article-corresponding input { width: 18px; height: 18px; accent-color: #0d6efd; }
+.article-corresponding input:focus-visible { outline: 2px solid #0d6efd; outline-offset: 3px; }
+.article-author-empty { padding: 16px; margin-bottom: 16px; background: #f8fafc; border: 1px dashed #c8d0da; overflow-wrap: anywhere; }
+.article-author-empty p:last-child { margin-bottom: 0; }
+.article-metadata-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.article-editor-form .jodit-container { max-width: 100%; }
+@media (max-width: 600px) {
+    .article-author-grid, .article-metadata-grid { grid-template-columns: minmax(0, 1fr); }
+    .article-author-card { padding: 12px; }
+    .article-add-author { width: 100%; }
+}
