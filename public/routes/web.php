@@ -9,12 +9,13 @@ use App\Http\Controllers\SitemapController;
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 Route::get('/sitemap-pages.xml', [SitemapController::class, 'pages']);
-Route::get('/sitemap-{type}-{page}.xml', [SitemapController::class, 'records'])->where('type', 'journals|issues|articles')->whereNumber('page');
+Route::get('/sitemap-{type}-{page}.xml', [SitemapController::class, 'records'])->where('type', 'journals|issues|articles|journal-pages')->whereNumber('page');
 Route::get('/robots.txt', [SitemapController::class, 'robots']);
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/AllJournals', [PublicController::class, 'journals'])->name('journals');
 Route::get('/journal/{journal}', [PublicController::class, 'journal'])->name('journal');
+Route::get('/journal/{journal}/pages/{page}', [PublicController::class, 'journalPage'])->name('journal.page');
 Route::get('/Articles/{Articles}', [PublicController::class, 'articles'])->name('articles');
 Route::get('/viewArticle/{slug}', [ReadArticleController::class, 'show'])->name('article.show');
 Route::get('/viewArticle/{slug}/fulltext.pdf', [ReadArticleController::class, 'fulltext'])->name('article.fulltext');

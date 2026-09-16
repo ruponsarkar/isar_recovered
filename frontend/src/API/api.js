@@ -1,6 +1,13 @@
 import API from "./apiConfig";
 
+const journalPagesPath = slug => `/admin/journals/${encodeURIComponent(slug)}/pages`;
+
 export default {
+    getJournalPages(slug) { return API.get(journalPagesPath(slug)); },
+    createJournalPage(slug, data) { return API.post(journalPagesPath(slug), data); },
+    updateJournalPage(slug, id, data) { return API.put(`${journalPagesPath(slug)}/${id}`, data); },
+    deleteJournalPage(slug, id) { return API.delete(`${journalPagesPath(slug)}/${id}`); },
+
 
     getJournals() {
         return API.get('/getJournals')

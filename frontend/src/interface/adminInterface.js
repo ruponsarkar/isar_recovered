@@ -14,6 +14,7 @@ import Articles from '../components/journals/articles';
 import Dashboard from '../AdminPages/dashboard/dashboard';
 import AdminDash from '../AdminPages/dashboard/home';
 import AddJournal from '../AdminPages/journal/addJournal';
+import JournalPages from '../AdminPages/journal/journalPages';
 import ViewJournal from '../AdminPages/journal/viewJournal';
 import Edittors from '../AdminPages/journal/editors';
 import Volume from '../AdminPages/volume/volume';
@@ -45,6 +46,7 @@ const AdminInterface = () => {
                     <Route path="dashboard" element={<AdminDash />} />
                     <Route path="AddJournal" element={<AddJournal />} />
                     <Route path="AddJournal/:slug" element={<AddJournal />} />
+                    <Route path="journal-pages/:slug" element={<JournalPages />} />
                     <Route path="viewjournal" element={<ViewJournal />} />
                     <Route path="editors/:id" element={<Edittors />} />
                     <Route path="Volume" element={<Volume />} />

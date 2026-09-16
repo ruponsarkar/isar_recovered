@@ -3,6 +3,7 @@
 use App\Http\Controllers\articleCntroller;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\journalController;
+use App\Http\Controllers\JournalPageController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +11,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 
 Route::post('login', [AuthController::class, 'login']);
+Route::get('journals/{journal}/pages', [JournalPageController::class, 'published']);
+Route::get('journals/{journal}/pages/{page}', [JournalPageController::class, 'show']);
+Route::middleware('auth:api')->prefix('admin/journals/{journal}/pages')->group(function () {
+    Route::get('/', [JournalPageController::class, 'index']);
+    Route::post('/', [JournalPageController::class, 'store']);
+    Route::put('/{page}', [JournalPageController::class, 'update'])->whereNumber('page');
+    Route::delete('/{page}', [JournalPageController::class, 'destroy'])->whereNumber('page');
+});
 Route::middleware('auth:api')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);

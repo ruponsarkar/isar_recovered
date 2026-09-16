@@ -1,1 +1,11 @@
 .journal-tabs{display:grid;grid-template-columns:repeat(4,1fr);background:#408e91;margin-bottom:12px}.journal-tabs a{padding:13px 6px;color:#fff;text-align:center;text-decoration:none;font-size:.78rem;font-weight:700;border-bottom:4px solid transparent}.journal-tabs a:hover,.journal-tabs a.active{background:#35797c;border-bottom-color:#ffc107}.tab-content-card{min-height:105px}.content-heading,.archive-volume h2,.editor-group>h2{font-size:1rem;font-weight:700;border-left:4px solid #408e91;background:#f3f5f5;padding:9px 12px}.archive-volume{padding-bottom:15px;border-bottom:1px solid #ddd;margin-bottom:15px}.archive-volume .btn{margin:5px}.editor-card{border:1px solid #ddd;padding:12px;margin:10px 0}.editor-card img{width:120px;height:120px;object-fit:cover;border:1px solid #ccc;padding:3px;border-radius:5%}.editor-card h3{font-size:.9rem;border-left:3px solid #408e91;padding-left:8px;margin-top:15px}.logo-grid{display:grid;grid-template-columns:1fr 1fr;padding:8px}.logo-grid a{border:0;padding:8px}.logo-grid img{width:100%;height:65px;object-fit:contain}.certificate{width:100%;padding:10px}.issue-heading{font-size:1.55rem;margin:0}.policy-copy h2{font-size:1.2rem;color:#408e91;font-weight:800;margin-top:22px}.policy-copy li{margin-bottom:8px}.footer-social a{display:inline-block;font-size:1.25rem;margin-right:12px}@media(max-width:575px){.journal-tabs{grid-template-columns:1fr 1fr}.editor-card img{margin-bottom:10px}}
+
+/* Journal menus can grow independently of the publisher navigation. */
+.isar-nav[aria-label="Journal navigation"] .navbar-brand { max-width: min(70vw, 260px); white-space: normal; overflow-wrap: anywhere; }
+.isar-nav[aria-label="Journal navigation"] .navbar-nav { flex-wrap: wrap; }
+.isar-nav[aria-label="Journal navigation"] .nav-link,
+.isar-nav[aria-label="Journal navigation"] .dropdown-item { white-space: normal; overflow-wrap: anywhere; }
+.isar-nav[aria-label="Journal navigation"] .dropdown-menu { max-width: min(90vw, 360px); }
+.journal-tabs a { min-width: 0; overflow-wrap: anywhere; }
+.tab-content-card .rich-copy img { max-width: 100%; height: auto; }
+.tab-content-card .rich-copy { overflow-x: auto; }

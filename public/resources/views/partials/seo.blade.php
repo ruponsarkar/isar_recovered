@@ -9,12 +9,22 @@
         'contact' => 'Contact ISAR Publisher',
         default => 'ISAR Publisher',
     };
+    if (isset($activePage)) $pageTitle = $activePage['title'].' | '.($journalData['j_name'] ?? 'Journal');
     $metaDescription = $description ?? 'Explore peer-reviewed open access research journals, published articles, editorial boards, and author guidelines at ISAR Publisher.';
     if ($routeName === 'journal') $metaDescription = \Illuminate\Support\Str::limit(\App\Services\Seo::text($journalData['about'] ?? $journalData['description'] ?? '').' Explore '.($journalData['j_name'] ?? 'this journal').', current issues, archives and editorial board.', 160);
     $canonicalPath = request()->getPathInfo();
     if ($routeName === 'journal') {
         $canonicalPath = '/journal/'.rawurlencode($journalData['slug'] ?? $slug);
         if (in_array($view ?? '', ['about', 'archive', 'editorial_board'], true)) $canonicalPath .= '?view='.$view;
+    }
+    if (isset($activePage)) {
+        $base = '/journal/'.rawurlencode($journalData['slug'] ?? $slug);
+        $canonicalPath = $base.'/pages/'.rawurlencode($activePage['slug']);
+        if ($activePage['type'] === 'system') {
+            $canonicalPath = $base.($activePage['system_key'] === 'current_issue' ? '' : '?view='.$activePage['system_key']);
+        }
+        if ($activePage['slug'] === 'about') $canonicalPath = $base.'?view=about';
+        if ($activePage['type'] === 'content') $metaDescription = \Illuminate\Support\Str::limit(\App\Services\Seo::text($activePage['content'] ?? ''), 160);
     }
     $canonical = \App\Services\Seo::url($canonicalPath);
     $noindex = str_starts_with($routeName, 'payment') || str_starts_with($routeName, 'pay.') || in_array($routeName, ['manuscript', 'join.author', 'join.reviewer', 'join.editor'], true) || in_array(request()->getPathInfo(), ['/joinReviewer', '/joinEditor'], true);

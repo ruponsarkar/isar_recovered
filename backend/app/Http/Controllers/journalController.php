@@ -146,7 +146,7 @@ class journalController extends Controller
             $save->aim_and_scope = $request->aimAndScope;
             $save->photo = $photo;
 
-            $save->save();
+            DB::transaction(fn () => $save->save());
 
             return response()->json(['message' => 'Added Successfully', 'status' => 200]);
         }
