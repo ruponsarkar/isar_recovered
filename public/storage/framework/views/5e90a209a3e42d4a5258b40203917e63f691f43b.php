@@ -11,9 +11,10 @@
     <link href="<?php echo e(asset('site.css')); ?>" rel="stylesheet">
     <link href="<?php echo e(asset('journal.css')); ?>" rel="stylesheet">
     <?php echo $__env->yieldPushContent('head'); ?>
+    <link href="<?php echo e(asset('theme.css')); ?>" rel="stylesheet">
 </head>
 
-<body><?php echo $__env->make('partials.nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><a class="manu-btn" href="<?php echo e(route('manuscript')); ?>"><i
+<body class="public-site <?php echo $__env->yieldContent('body-class'); ?>"><?php echo $__env->make('partials.nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><a class="manu-btn" href="<?php echo e(route('manuscript')); ?>"><i
             class="fa-solid fa-paper-plane"></i> Submit Manuscript</a>
     <main>
         <?php if(session('success')): ?>

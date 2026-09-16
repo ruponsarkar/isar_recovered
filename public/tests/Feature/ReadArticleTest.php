@@ -42,6 +42,19 @@ class ReadArticleTest extends TestCase
         $this->get('/download/6')->assertNotFound();
     }
 
+    public function test_shared_theme_is_loaded_after_page_styles_on_home_and_article_pages(): void
+    {
+        $this->mock(PublicSidebarData::class, function ($mock) {
+            $mock->shouldReceive('get')->andReturn(['journals'=>[], 'editors'=>[], 'indexings'=>[]]);
+        });
+        foreach (['/' => 'home.css', '/viewArticle/research-paper' => 'read-article.css'] as $url => $pageStyle) {
+            $html = $this->get($url)->assertOk()->assertSee('class="public-site ', false)->getContent();
+            $this->assertSame(1, substr_count($html, '/theme.css"'));
+            $this->assertNotFalse(strpos($html, '/'.$pageStyle.'"'));
+            $this->assertGreaterThan(strpos($html, '/'.$pageStyle.'"'), strpos($html, '/theme.css"'));
+        }
+    }
+
     public function test_home_and_article_list_link_to_local_detail_with_affiliations_on_next_line(): void
     {
         $this->mock(PublicSidebarData::class, function ($mock) { $mock->shouldReceive('get')->andReturn(['journals'=>[],'editors'=>[],'indexings'=>[]]); });

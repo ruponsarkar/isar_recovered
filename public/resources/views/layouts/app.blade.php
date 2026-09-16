@@ -11,9 +11,10 @@
     <link href="{{ asset('site.css') }}" rel="stylesheet">
     <link href="{{ asset('journal.css') }}" rel="stylesheet">
     @stack('head')
+    <link href="{{ asset('theme.css') }}" rel="stylesheet">
 </head>
 
-<body>@include('partials.nav')<a class="manu-btn" href="{{ route('manuscript') }}"><i
+<body class="public-site @yield('body-class')">@include('partials.nav')<a class="manu-btn" href="{{ route('manuscript') }}"><i
             class="fa-solid fa-paper-plane"></i> Submit Manuscript</a>
     <main>
         @if (session('success'))

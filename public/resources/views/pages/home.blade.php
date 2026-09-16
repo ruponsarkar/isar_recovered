@@ -1,4 +1,8 @@
 @extends('layouts.app')
+@section('body-class', 'home-page')
+@push('head')
+    <link href="{{ asset('home.css') }}" rel="stylesheet">
+@endpush
 @section('content')
     @php
         $fallback = [

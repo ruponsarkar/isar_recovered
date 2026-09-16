@@ -1,3 +1,7 @@
+<?php $__env->startSection('body-class', 'home-page'); ?>
+<?php $__env->startPush('head'); ?>
+    <link href="<?php echo e(asset('home.css')); ?>" rel="stylesheet">
+<?php $__env->stopPush(); ?>
 <?php $__env->startSection('content'); ?>
     <?php
         $fallback = [
