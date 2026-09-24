@@ -30,6 +30,24 @@ class JournalPagesTest extends TestCase
         $this->page(2, 'guidelines', ['title'=>'Beta Guidelines','content'=>'<p>Beta rules only</p>']);
     }
 
+    public function test_journal_sidebar_only_shows_active_impact_factors(): void
+    {
+        Schema::create('impact_factors', function (Blueprint $table) {
+            $table->increments('id'); $table->integer('j_id'); $table->string('impact');
+            $table->string('link')->nullable(); $table->integer('isActive')->nullable();
+        });
+        DB::table('impact_factors')->insert([
+            ['j_id'=>1, 'impact'=>'Active factor', 'isActive'=>1],
+            ['j_id'=>1, 'impact'=>'Deleted factor', 'isActive'=>0],
+            ['j_id'=>1, 'impact'=>'Unset factor', 'isActive'=>null],
+            ['j_id'=>2, 'impact'=>'Other journal factor', 'isActive'=>1],
+        ]);
+        $this->get('/journal/alpha')->assertOk()->assertSee('Active factor')
+            ->assertDontSee('Deleted factor')->assertDontSee('Unset factor')->assertDontSee('Other journal factor');
+        DB::table('impact_factors')->where('j_id', 1)->update(['isActive'=>0]);
+        $this->get('/journal/alpha')->assertOk()->assertDontSee('Impact Factor')->assertDontSee('Active factor');
+    }
+
     private function page(int $journal, string $slug, array $changes = []): int
     {
         return DB::table('journal_pages')->insertGetId(array_merge(['journal_id'=>$journal,'slug'=>$slug,'title'=>$slug,'type'=>'content','content'=>'<p>Page body</p>','sort_order'=>10,'is_published'=>true,'show_in_nav'=>true,'show_in_tabs'=>false], $changes));

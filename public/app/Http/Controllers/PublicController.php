@@ -105,11 +105,12 @@ class PublicController extends Controller
         $ia = $this->api("getIndexingById/$journal");
         $ca = $this->api("getCeertificateById/$journal");
         $fa = $this->api("getImpactFactor/$journal");
+        $factors = collect($remote ? ($fa['impact'] ?? []) : $filter($this->rows('impact_factors')))->filter(fn($factor) => (string) ($factor['isActive'] ?? '') === '1')->values()->all();
         $tab = $request->query('view', 'current_issue');
         if (!in_array($tab, ['about', 'current_issue', 'archive', 'editorial_board'], true))
             $tab = 'current_issue';
         if ($journalPages !== null) $tab = $activePage ? ($activePage['type'] === 'system' ? $activePage['system_key'] : 'content') : 'empty';
-        return view('pages.journal', ['journalPages' => $journalPages, 'activePage' => $activePage, 'journal' => $record, 'slug' => $record['slug'] ?? $journal, 'articles' => $articles, 'editors' => $editors, 'issues' => $issues, 'volumes' => $volumes, 'indexings' => $remote ? ($ia['indexing'] ?? $api['indexing'] ?? []) : $filter($this->rows('indexing')), 'certificates' => $remote ? ($ca['certificate'] ?? []) : $filter($this->rows('certificate')), 'factors' => $remote ? ($fa['impact'] ?? []) : $filter($this->rows('impact_factors')), 'chief' => collect($editors)->firstWhere('type', 'chief') ?: ($api['chief'] ?? null), 'view' => $tab] + $this->globals());
+        return view('pages.journal', ['journalPages' => $journalPages, 'activePage' => $activePage, 'journal' => $record, 'slug' => $record['slug'] ?? $journal, 'articles' => $articles, 'editors' => $editors, 'issues' => $issues, 'volumes' => $volumes, 'indexings' => $remote ? ($ia['indexing'] ?? $api['indexing'] ?? []) : $filter($this->rows('indexing')), 'certificates' => $remote ? ($ca['certificate'] ?? []) : $filter($this->rows('certificate')), 'factors' => $factors, 'chief' => collect($editors)->firstWhere('type', 'chief') ?: ($api['chief'] ?? null), 'view' => $tab] + $this->globals());
     }
     public function articles(string $articles)
     {

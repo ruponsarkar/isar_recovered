@@ -1,2 +1,38 @@
-<section class="paper-card"><div class="section-title"><?php echo e($heading); ?></div><div class="paper-body"><?php $__empty_1 = true; $__currentLoopData = $articles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $article): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><article class="article"><div class="article-topline"><span class="badge text-bg-success">Original Article</span><span class="article-count"><?php echo e($article['count']??0); ?> downloads</span></div><a class="article-title d-block mt-3" target="_blank" rel="noopener" href="<?php echo e(!empty($article['slug']) ? route('article.show', $article['slug']) : route('journals')); ?>"><?php echo e($article['name']??'Research article'); ?></a><div class="article-meta"><span><i class="fa-solid fa-user"></i> <?php echo e(author_text($article['aname'] ?? '')); ?></span><span><i class="fa-solid fa-bookmark"></i> <?php echo e(author_text($article['designation'] ?? '')); ?></span><span><i class="fa-solid fa-book-open"></i> Page: <?php echo e($article['page']??'—'); ?></span></div><?php if(!empty($article['doi'])&&!in_array($article['doi'],['undefined','null'])): ?><div class="article-doi"><i class="fa-solid fa-tag"></i> DOI: <a href="<?php echo e($article['doi']); ?>" target="_blank" rel="noopener"><?php echo e($article['doi']); ?></a></div><?php endif; ?><div class="article-actions"><button class="btn btn-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#abstract-<?php echo e($article['id']??$loop->index); ?>"><i class="fa-solid fa-file-lines"></i> Abstract</button><?php if(!empty($article['file']) && isset($article['id']) && ctype_digit((string) $article['id'])): ?><a class="btn btn-secondary btn-sm" href="<?php echo e(route('article.pdf', ['id' => $article['id'], 'filename' => (substr(\Illuminate\Support\Str::slug(strip_tags($article['name'] ?? '')), 0, 150) ?: 'article') . '.pdf'])); ?>" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> PDF</a><?php else: ?><span class="btn btn-secondary btn-sm disabled" aria-disabled="true">PDF unavailable</span><?php endif; ?><a class="btn btn-success btn-sm" target="_blank" rel="noopener" href="<?php echo e(!empty($article['slug']) ? route('article.show', $article['slug']) : route('journals')); ?>">View Article <i class="fa-solid fa-circle-arrow-right"></i></a></div><div class="collapse abstract-box" id="abstract-<?php echo e($article['id']??$loop->index); ?>"><?php echo $article['abstract']??''; ?></div></article><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><div class="empty">No articles are available yet.</div><?php endif; ?></div></section>
+<section class="paper-card">
+    <div class="section-title"><?php echo e($heading); ?></div>
+    <div class="paper-body">
+        <?php $__empty_1 = true; $__currentLoopData = $articles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $article): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <article class="article">
+                <div class="article-topline"><span class="badge text-bg-success">Original Article</span><span
+                        class="article-count"><?php echo e($article['count'] ?? 0); ?> downloads</span></div><a
+                    class="article-title d-block mt-3" target="_blank" rel="noopener"
+                    href="<?php echo e(!empty($article['slug']) ? route('article.show', $article['slug']) : route('journals')); ?>"><?php echo e($article['name'] ?? 'Research article'); ?></a>
+                <div class="article-meta flex-column align-items-start gap-1"><span><i class="fa-solid fa-user"></i>
+                        <?php echo e(author_text($article['aname'] ?? '')); ?></span><span><i class="fa-solid fa-bookmark"></i>
+                        <?php echo e(author_text($article['designation'] ?? '')); ?></span><span><i
+                            class="fa-solid fa-book-open"></i> Page: <?php echo e($article['page'] ?? '—'); ?></span></div>
+                <?php if(!empty($article['doi']) && !in_array($article['doi'], ['undefined', 'null'])): ?>
+                    <div class="article-doi"><i class="fa-solid fa-tag"></i> DOI: <a href="<?php echo e($article['doi']); ?>"
+                            target="_blank" rel="noopener"><?php echo e($article['doi']); ?></a></div>
+                <?php endif; ?>
+                <div class="article-actions">
+                    <button class="btn btn-secondary btn-sm" data-bs-toggle="collapse"
+                        data-bs-target="#abstract-<?php echo e($article['id'] ?? $loop->index); ?>"><i
+                            class="fa-solid fa-file-lines"></i> Abstract</button>
+                    <?php if(!empty($article['file']) && isset($article['id']) && ctype_digit((string) $article['id'])): ?>
+                        <a class="btn btn-secondary btn-sm"
+                            href="<?php echo e(route('article.pdf', ['id' => $article['id'], 'filename' => (substr(\Illuminate\Support\Str::slug(strip_tags($article['name'] ?? '')), 0, 150) ?: 'article') . '.pdf'])); ?>"
+                        target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> PDF</a><?php else: ?><span
+                            class="btn btn-secondary btn-sm disabled" aria-disabled="true">PDF unavailable</span>
+                    <?php endif; ?>
+                    <a class="btn btn-success btn-sm" target="_blank" rel="noopener"
+                        href="<?php echo e(!empty($article['slug']) ? route('article.show', $article['slug']) : route('journals')); ?>">
+                        View Article <i class="fa-solid fa-circle-arrow-right"></i></a>
+                </div>
+                <div class="collapse abstract-box" id="abstract-<?php echo e($article['id'] ?? $loop->index); ?>">
+                    <?php echo $article['abstract'] ?? ''; ?></div>
+        </article><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><div class="empty">No articles are available yet.</div>
+        <?php endif; ?>
+    </div>
+</section>
 <?php /**PATH /Users/ruponsarkar/Documents/projects/isar/isar/public/resources/views/pages/article-list.blade.php ENDPATH**/ ?>
