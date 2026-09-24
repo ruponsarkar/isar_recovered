@@ -45,3 +45,5 @@ Route::post('/pay/paypal/capture', [PaymentController::class, 'paypalCapture'])-
 Route::get('/pay/result/{reference}', [PaymentController::class, 'result'])->name('payment.result');
 Route::post('/pay/order', [PaymentController::class, 'razorpayOrder'])->name('pay.order');
 Route::post('/pay', [PaymentController::class, 'razorpaySuccess'])->name('pay');
+
+Route::get('/articles/{id}/{filename}', [ReadArticleController::class, 'pdf'])->whereNumber('id')->where('filename', '[^/]+\\.pdf')->name('article.pdf');

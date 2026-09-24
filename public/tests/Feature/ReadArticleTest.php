@@ -58,8 +58,8 @@ class ReadArticleTest extends TestCase
     public function test_home_and_article_list_link_to_local_detail_with_affiliations_on_next_line(): void
     {
         $this->mock(PublicSidebarData::class, function ($mock) { $mock->shouldReceive('get')->andReturn(['journals'=>[],'editors'=>[],'indexings'=>[]]); });
-        $this->get('/')->assertOk()->assertSee('article-meta flex-column align-items-start', false)->assertSee('article-affiliations w-100', false)->assertSee('/viewArticle/research-paper', false)->assertSee('/download/6', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('/Articles/research-paper', false);
-        $this->get('/Articles/7')->assertOk()->assertSee('/viewArticle/research-paper', false)->assertSee('/download/6', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('article.isarpublisher.com', false);
+        $this->get('/')->assertOk()->assertSee('article-meta flex-column align-items-start', false)->assertSee('article-affiliations w-100', false)->assertSee('/viewArticle/research-paper', false)->assertSee('/articles/6/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('/Articles/research-paper', false);
+        $this->get('/Articles/7')->assertOk()->assertSee('/viewArticle/research-paper', false)->assertSee('/articles/6/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('article.isarpublisher.com', false);
     }
 
     public function test_local_download_increments_only_when_valid_file_exists(): void
@@ -71,11 +71,13 @@ class ReadArticleTest extends TestCase
             $this->assertSame(0, DB::table('article')->where('id',6)->value('count'));
             File::ensureDirectoryExists($root.'/assets/articles');
             File::put($root.'/assets/articles/test-paper.pdf','%PDF-1.4 test');
-            $this->get('/download/6')->assertOk()->assertDownload('test-paper.pdf');
+            $this->get('/download/6')->assertOk()->assertDownload('real-article-title.pdf');
             $this->assertSame(1, DB::table('article')->where('id',6)->value('count'));
+            $this->get('/articles/6/real-article-title.pdf')->assertOk()->assertHeader('Content-Disposition', 'inline; filename=real-article-title.pdf');
+            $this->get('/viewArticle/research-paper/fulltext.pdf')->assertOk()->assertHeader('Content-Disposition', 'inline; filename=real-article-title.pdf');
             DB::table('article')->where('id',6)->update(['file'=>'../test-paper.pdf']);
             $this->get('/download/6')->assertNotFound();
-            $this->assertSame(1, DB::table('article')->where('id',6)->value('count'));
+            $this->assertSame(2, DB::table('article')->where('id',6)->value('count'));
         } finally { File::deleteDirectory($root); }
     }
 }

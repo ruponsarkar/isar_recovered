@@ -336,6 +336,7 @@ class journalController extends Controller
 
     function postArticle(Request $request)
     {
+        $request->validate(['file' => 'nullable|file|mimes:pdf']);
         $dates = $request->validate([
             'received'=>'sometimes|nullable|date_format:Y-m-d',
             'revised'=>'sometimes|nullable|date_format:Y-m-d',
@@ -365,8 +366,8 @@ class journalController extends Controller
         if (!$request->id || $request->id == 'undefined') {
             // new add 
             if ($request->file('file')) {
-                $file = time() . '-' . $request->file('file')->getClientOriginalName();
-                $file = str_replace(' ', '-', $file);
+                $title = substr(\Illuminate\Support\Str::slug(strip_tags((string) $request->name)), 0, 150) ?: 'article';
+                $file = $title . '-' . \Illuminate\Support\Str::uuid() . '.pdf';
                 $request->file('file')->move(public_path('assets/articles'), $file);
             }
 
@@ -400,8 +401,8 @@ class journalController extends Controller
 
 
             if ($request->file('file')) {
-                $file = time() . '-' . $request->file('file')->getClientOriginalName();
-                $file = str_replace(' ', '-', $file);
+                $title = substr(\Illuminate\Support\Str::slug(strip_tags((string) $request->name)), 0, 150) ?: 'article';
+                $file = $title . '-' . \Illuminate\Support\Str::uuid() . '.pdf';
                 $request->file('file')->move(public_path('assets/articles'), $file);
 
 
@@ -733,6 +734,29 @@ class journalController extends Controller
         $certificate = DB::table('certificate')->where('j_id', $journal->j_id)->get();
 
         return response()->json(['certificate' => $certificate, 'journal' => $journal, 'status' => 200]);
+    }
+
+    public function deleteEditor(Request $request)
+    {
+        return $this->deleteJournalAsset($request, 'editors_data');
+    }
+
+    public function deleteIndexing(Request $request)
+    {
+        return $this->deleteJournalAsset($request, 'indexing');
+    }
+
+    public function deleteCertificate(Request $request)
+    {
+        return $this->deleteJournalAsset($request, 'certificate');
+    }
+
+    private function deleteJournalAsset(Request $request, string $table)
+    {
+        $data = $request->validate(['id' => 'required|integer', 'j_id' => 'required|integer']);
+        $deleted = DB::table($table)->where('id', $data['id'])->where('j_id', $data['j_id'])->delete();
+        abort_unless($deleted, 404);
+        return response()->json(['message' => ($table === 'editors_data' ? 'Editor' : ucfirst($table)) . ' deleted successfully']);
     }
 
     function postIndexing(Request $request)

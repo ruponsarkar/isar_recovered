@@ -29,6 +29,11 @@ class ReadArticleController extends Controller
         return view('pages.read-article', compact('article', 'issue', 'volume', 'journal', 'citationAuthors', 'description') + ['title' => $article->name]);
     }
 
+    public function pdf(string $id, string $filename)
+    {
+        return $this->download($id);
+    }
+
     public function fulltext(string $slug)
     {
         $article = DB::table('article')->where('slug', $slug)->where('status', 1)->first();
@@ -48,7 +53,8 @@ class ReadArticleController extends Controller
             if ($root && $path && str_starts_with($path, $root.DIRECTORY_SEPARATOR) && is_file($path)) {
                 if ($countDownload) DB::table('article')->where('id', $article->id)->where('status', 1)->update(['count' => DB::raw('COALESCE(count, 0) + 1')]);
                 $headers = ['Content-Type' => 'application/pdf', 'Link' => '<'.Seo::url('/viewArticle/'.rawurlencode($article->slug)).'>; rel="canonical"'];
-                return $countDownload ? response()->download($path, $filename, $headers) : response()->file($path, $headers);
+                $downloadName = (substr(\Illuminate\Support\Str::slug(strip_tags((string) $article->name)), 0, 150) ?: 'article') . '.pdf';
+                return response()->download($path, $downloadName, $headers, $countDownload && !request()->boolean('inline') && !request()->routeIs('article.pdf') ? 'attachment' : 'inline');
             }
         }
         // This base is administrator-configured, never supplied by the visitor.

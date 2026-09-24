@@ -3,6 +3,9 @@ import API from "./apiConfig";
 const journalPagesPath = slug => `/admin/journals/${encodeURIComponent(slug)}/pages`;
 
 export default {
+    deleteEditor(id, j_id) { return API.post('/deleteEditor', { id, j_id }); },
+    deleteIndexing(id, j_id) { return API.post('/deleteIndexing', { id, j_id }); },
+    deleteCertificate(id, j_id) { return API.post('/deleteCertificate', { id, j_id }); },
     getJournalPages(slug) { return API.get(journalPagesPath(slug)); },
     createJournalPage(slug, data) { return API.post(journalPagesPath(slug), data); },
     updateJournalPage(slug, id, data) { return API.put(`${journalPagesPath(slug)}/${id}`, data); },
@@ -80,6 +83,10 @@ export default {
     },
     deleteImpactFactor(id) {
         return API.post('/deleteImpactFactor', { id })
+    },
+    downloadArticleUrl(id, title) {
+        const filename = (String(title || '').replace(/<[^>]*>/g, '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 150) || 'article') + '.pdf';
+        return API.getUri({ url: `/articles/${id}/${filename}` });
     },
     downloadArticle(id) {
         return API.get(`/downloadArticle/${id}`)

@@ -17,27 +17,20 @@
                 <article class="paper-card journal-identity">
                     <div class="section-title text-center">{{ $journal['j_name'] ?? 'ISAR Journal' }}</div>
                     <div class="paper-body">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-3"><img class="journal-cover"
-                                    src="{{ asset_url('journal/' . ($journal['photo'] ?? '')) }}" alt="Journal cover"></div>
-                            <div class="col-md-9">
-                                <div class="journal-name">{{ $journal['j_name'] ?? '' }}</div>
-                                <div><b>Abbr. Title:</b> {{ $journal['abbr_title'] ?? '—' }}</div>
-                                @if (($journal['j_name'] ?? '') === 'ISAR Journal of Economics and Business Management')
-                                    <div><b>Subject:</b> Business management/ public relation</div>
-                                @endif
-                                <div>
-                                    <b>ISSN(Online):</b> {{ $journal['issn'] ?? '—' }}
-                                </div>
-                                <div><b>Publisher:</b> ISAR Publisher</div>
-                                <div><b>Chief Editor:</b> {{ $chief['name'] ?? '—' }}</div>
-                                <div><b>Country of origin:</b> {{ $journal['country_of_origin'] ?? '—' }}</div>
-                                <div><b>Language:</b> {{ $journal['language'] ?? 'English' }}</div>
-                                <div><b>Frequency:</b> {{ $journal['frequency'] ?? '—' }}</div>
-                                <div><b>Format:</b> Online</div>
-                                <div><b>Journal starting year:</b> {{ $journal['starting_year'] ?? '—' }}</div>
-                            </div>
-                        </div>
+                        <dl class="journal-details">
+                            <div><dt>Abbr. Title:</dt><dd>{{ $journal['abbr_title'] ?? '—' }}</dd></div>
+                            @if (($journal['j_name'] ?? '') === 'ISAR Journal of Economics and Business Management')
+                                <div><dt>Subject:</dt><dd>Business management/ public relation</dd></div>
+                            @endif
+                            <div><dt>ISSN(Online):</dt><dd>{{ $journal['issn'] ?? '—' }}</dd></div>
+                            <div><dt>Publisher:</dt><dd>ISAR Publisher</dd></div>
+                            <div><dt>Chief Editor:</dt><dd>{{ $chief['name'] ?? '—' }}</dd></div>
+                            <div><dt>Country of origin:</dt><dd>{{ $journal['country_of_origin'] ?? '—' }}</dd></div>
+                            <div><dt>Language:</dt><dd>{{ $journal['language'] ?? 'English' }}</dd></div>
+                            <div><dt>Frequency:</dt><dd>{{ $journal['frequency'] ?? '—' }}</dd></div>
+                            <div><dt>Format:</dt><dd>Online</dd></div>
+                            <div><dt>Journal starting year:</dt><dd>{{ $journal['starting_year'] ?? '—' }}</dd></div>
+                        </dl>
                     </div>
                 </article>
                 @if (isset($journalPages))
@@ -68,7 +61,7 @@
                                     class="empty">No current issue has been published for this journal yet.</div>
                             @endif
                         @elseif($view === 'archive')
-                            @forelse($volumes as $volume)
+                            @forelse(collect($volumes)->sortByDesc(fn($volume) => (int) ($volume['year'] ?? 0)) as $volume)
                                 @php $volumeIssues=collect($issues)->filter(fn($i)=>(string)($i['v_id']??'')===(string)($volume['id']??'')||($volume['name']??null)===($i['volume']??null)); @endphp<section class="archive-volume">
                                     <h2>{{ $volume['year'] ?? '' }}</h2>
                                     @forelse($volumeIssues as $issue)
@@ -119,6 +112,12 @@
                 @include('pages.article-list', ['heading' => 'Latest Articles', 'articles' => $articles])
             </main>
             <aside class="col-lg-3">
+                <div class="paper-card journal-cover-card">
+                    <div class="paper-body">
+                        <img class="journal-cover" src="{{ asset_url('journal/' . ($journal['photo'] ?? '')) }}"
+                            alt="{{ $journal['j_name'] ?? 'Journal' }} cover">
+                    </div>
+                </div>
                 @include('pages.journal-sidebar')
                 @include('pages.sidebar', [
                 'journals' => $journals,

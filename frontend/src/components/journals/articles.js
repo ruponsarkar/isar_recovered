@@ -46,17 +46,6 @@ const Articles = () => {
       });
   };
 
-  const downloadArticle = (id) => {
-    api
-      .downloadArticle(id)
-      .then((res) => {
-        console.log("res==>", res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const handleClick = (item) => {
     console.log(item.id);
     setArticle(
@@ -153,8 +142,7 @@ const Articles = () => {
                           </button>
                           &nbsp;
                           <a
-                            onClick={() => downloadArticle(el.id)}
-                            href={`${process.env.REACT_APP_BACKEND}assets/articles/${el.file}`}
+                            href={api.downloadArticleUrl(el.id, el.name)}
                             target="_blank"
                             className="btn btn-secondary btn-sm"
                           >

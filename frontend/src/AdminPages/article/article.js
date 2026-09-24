@@ -200,7 +200,7 @@ const Article = () => {
         formData.append('published_date', articleData.published_date);
         ['received', 'revised', 'accepted'].forEach(field => formData.append(field, articleData[field] || ''));
         formData.append('keywords', articleData.keywords);
-        formData.append('file', articleFile);
+        if (articleFile instanceof File) formData.append('file', articleFile);
         formData.append('i_id', params.id);
 
         axios.post(url, formData)

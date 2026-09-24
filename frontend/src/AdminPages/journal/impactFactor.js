@@ -16,7 +16,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { useParams } from 'react-router-dom';
-import Swal from 'sweetalert2'
 
 
 
@@ -140,61 +139,20 @@ const ImpactFactorPage = () => {
             })
     }
 
-    const handleDelete = (data) => {
-        console.log(data.id);
-
-
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-
-
-                api.deleteImpactFactor(data.id).then((res) => {
-                    console.log(res);
-                    if (res.status === 200) {
-                        handleClose();
-                        getImpactFactor();
-                        toast.success(res.data.message, {
-                            position: "top-right",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "colored",
-                        });
-
-                        Swal.fire({
-                            title: "Deleted!",
-                            text: "Your file has been deleted.",
-                            icon: "success"
-                        });
-                    }
-                    else {
-                        console.log("Something went wrong");
-                    }
-                })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-
-
-
-            }
-        });
-
-    }
-
-
-
+    const [deletingId, setDeletingId] = useState(null);
+    const handleDelete = async (row) => {
+        if (deletingId !== null || !window.confirm('Delete this impact factor?')) return;
+        setDeletingId(row.id);
+        try {
+            const response = await api.deleteImpactFactor(row.id);
+            setImpact(current => current.filter(item => item.id !== row.id));
+            toast.success(response.data.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Unable to delete impact factor. Please try again.');
+        } finally {
+            setDeletingId(null);
+        }
+    };
 
     const addIndexing = () => {
         return (
@@ -263,10 +221,10 @@ const ImpactFactorPage = () => {
             { field: 'impact', headerName: 'name', width: 300 },
             { field: 'link', headerName: 'Link', width: 300 },
             {
-                field: 'id', headerName: 'Edit', width: 300,
+                field: 'delete', headerName: 'Delete', width: 120, sortable: false, filterable: false,
                 renderCell: (field) => (
                     <>
-                        <button className='btn btn-info btn-sm' onClick={() => handleDelete(field.row)}>Delete</button>
+                        <button type="button" className='btn btn-danger btn-sm' disabled={deletingId !== null} onClick={event => { event.stopPropagation(); handleDelete(field.row); }}>{deletingId === field.row.id ? 'Deleting…' : 'Delete'}</button>
                     </>
                 ),
             },

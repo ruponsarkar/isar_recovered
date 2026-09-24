@@ -60,3 +60,11 @@ Route::post('deleteImpactFactor', [journalController::class, 'deleteImpactFactor
 Route::get('downloadArticle/{slug}', [articleCntroller::class, 'download']);
 Route::post('create-order', [PaymentController::class, 'createOrder']);
 Route::post('payment-success', [PaymentController::class, 'paymentSuccess']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('deleteIndexing', [journalController::class, 'deleteIndexing']);
+    Route::post('deleteEditor', [journalController::class, 'deleteEditor']);
+    Route::post('deleteCertificate', [journalController::class, 'deleteCertificate']);
+});
+
+Route::get('articles/{id}/{filename}', [articleCntroller::class, 'download'])->whereNumber('id')->where('filename', '[^/]+\\.pdf')->name('article.pdf');

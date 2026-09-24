@@ -15,7 +15,6 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 import { Link } from "react-router-dom";
-import fileDownload from "js-file-download";
 import api from "../../API/api";
 
 const LatestArticle = (props) => {
@@ -28,17 +27,6 @@ const LatestArticle = (props) => {
         e.id === item.id ? { ...e, isOpen: !e.isOpen } : e
       )
     );
-  };
-
-  const downloadArticle = (id) => {
-    api
-      .downloadArticle(id)
-      .then((res) => {
-        console.log("res==>", res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   useEffect(() => {
@@ -141,21 +129,14 @@ const LatestArticle = (props) => {
                         </button>
                         &nbsp;
                         <a
-                          href={`${process.env.REACT_APP_BACKEND}assets/articles/${el.file}`}
-                          onClick={() => downloadArticle(el.id)}
-                          download
+                          href={api.downloadArticleUrl(el.id, el.name)}
                           target="_blank"
                           rel="noreferrer"
                           className="btn btn-secondary btn-sm"
                         >
                           <PictureAsPdfIcon fontSize="small" /> PDF
                         </a>
-                        {/* <button
-                          onClick={() => downloadArticle(el.id)}
-                          className="btn btn-secondary btn-sm"
-                        >
-                          <PictureAsPdfIcon fontSize="small" /> PDF
-                        </button> */}
+
                         &nbsp;
                         <a
                           href={`https://article.isarpublisher.com/viewArticle/${el.slug}`}

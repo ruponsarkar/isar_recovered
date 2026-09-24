@@ -391,6 +391,21 @@ const AddIndexingPage = () => {
 
 
 
+    const [deletingId, setDeletingId] = useState(null);
+    const handleDelete = async (row) => {
+      if (deletingId !== null || !window.confirm('Delete this Indexing entry?')) return;
+      setDeletingId(row.id);
+      try {
+        const response = await api.deleteIndexing(row.id, journalId);
+        setIndexing(current => current.filter(item => item.id !== row.id));
+        toast.success(response.data.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message || 'Unable to delete this entry. Please try again.');
+      } finally {
+        setDeletingId(null);
+      }
+    };
+
     const viewIndexing = () => {
 
         const columns = [
@@ -422,6 +437,16 @@ const AddIndexingPage = () => {
             //         </>
             //     ),
             // },
+
+      {
+        field: 'delete', headerName: 'Delete', width: 120, sortable: false, filterable: false,
+        renderCell: ({ row }) => (
+          <button type="button" className="btn btn-danger btn-sm" disabled={deletingId !== null || !journalId}
+            onClick={(event) => { event.stopPropagation(); handleDelete(row); }}>
+            {deletingId === row.id ? 'Deleting…' : 'Delete'}
+          </button>
+        ),
+      },
         ];
 
         return (

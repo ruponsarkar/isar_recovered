@@ -12,28 +12,20 @@
                 <article class="paper-card journal-identity">
                     <div class="section-title text-center"><?php echo e($journal['j_name'] ?? 'ISAR Journal'); ?></div>
                     <div class="paper-body">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-3"><img class="journal-cover"
-                                    src="<?php echo e(asset_url('journal/' . ($journal['photo'] ?? ''))); ?>" alt="Journal cover"></div>
-                            <div class="col-md-9">
-                                <div class="journal-name"><?php echo e($journal['j_name'] ?? ''); ?></div>
-                                <div><b>Abbr. Title:</b> <?php echo e($journal['abbr_title'] ?? '—'); ?></div>
-                                <?php if(($journal['j_name'] ?? '') === 'ISAR Journal of Economics and Business Management'): ?>
-                                    <div><b>Subject:</b> Business management/ public relation</div>
-                                <?php endif; ?>
-                                <div>
-                                    <b>ISSN(Online):</b> <?php echo e($journal['issn'] ?? '—'); ?>
-
-                                </div>
-                                <div><b>Publisher:</b> ISAR Publisher</div>
-                                <div><b>Chief Editor:</b> <?php echo e($chief['name'] ?? '—'); ?></div>
-                                <div><b>Country of origin:</b> <?php echo e($journal['country_of_origin'] ?? '—'); ?></div>
-                                <div><b>Language:</b> <?php echo e($journal['language'] ?? 'English'); ?></div>
-                                <div><b>Frequency:</b> <?php echo e($journal['frequency'] ?? '—'); ?></div>
-                                <div><b>Format:</b> Online</div>
-                                <div><b>Journal starting year:</b> <?php echo e($journal['starting_year'] ?? '—'); ?></div>
-                            </div>
-                        </div>
+                        <dl class="journal-details">
+                            <div><dt>Abbr. Title:</dt><dd><?php echo e($journal['abbr_title'] ?? '—'); ?></dd></div>
+                            <?php if(($journal['j_name'] ?? '') === 'ISAR Journal of Economics and Business Management'): ?>
+                                <div><dt>Subject:</dt><dd>Business management/ public relation</dd></div>
+                            <?php endif; ?>
+                            <div><dt>ISSN(Online):</dt><dd><?php echo e($journal['issn'] ?? '—'); ?></dd></div>
+                            <div><dt>Publisher:</dt><dd>ISAR Publisher</dd></div>
+                            <div><dt>Chief Editor:</dt><dd><?php echo e($chief['name'] ?? '—'); ?></dd></div>
+                            <div><dt>Country of origin:</dt><dd><?php echo e($journal['country_of_origin'] ?? '—'); ?></dd></div>
+                            <div><dt>Language:</dt><dd><?php echo e($journal['language'] ?? 'English'); ?></dd></div>
+                            <div><dt>Frequency:</dt><dd><?php echo e($journal['frequency'] ?? '—'); ?></dd></div>
+                            <div><dt>Format:</dt><dd>Online</dd></div>
+                            <div><dt>Journal starting year:</dt><dd><?php echo e($journal['starting_year'] ?? '—'); ?></dd></div>
+                        </dl>
                     </div>
                 </article>
                 <?php if(isset($journalPages)): ?>
@@ -65,7 +57,7 @@
                                     class="empty">No current issue has been published for this journal yet.</div>
                             <?php endif; ?>
                         <?php elseif($view === 'archive'): ?>
-                            <?php $__empty_1 = true; $__currentLoopData = $volumes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $volume): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php $__empty_1 = true; $__currentLoopData = collect($volumes)->sortByDesc(fn($volume) => (int) ($volume['year'] ?? 0)); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $volume): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <?php $volumeIssues=collect($issues)->filter(fn($i)=>(string)($i['v_id']??'')===(string)($volume['id']??'')||($volume['name']??null)===($i['volume']??null)); ?><section class="archive-volume">
                                     <h2><?php echo e($volume['year'] ?? ''); ?></h2>
                                     <?php $__empty_2 = true; $__currentLoopData = $volumeIssues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $issue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_2 = false; ?>
@@ -116,6 +108,12 @@
                 <?php echo $__env->make('pages.article-list', ['heading' => 'Latest Articles', 'articles' => $articles], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </main>
             <aside class="col-lg-3">
+                <div class="paper-card journal-cover-card">
+                    <div class="paper-body">
+                        <img class="journal-cover" src="<?php echo e(asset_url('journal/' . ($journal['photo'] ?? ''))); ?>"
+                            alt="<?php echo e($journal['j_name'] ?? 'Journal'); ?> cover">
+                    </div>
+                </div>
                 <?php echo $__env->make('pages.journal-sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 <?php echo $__env->make('pages.sidebar', [
                 'journals' => $journals,

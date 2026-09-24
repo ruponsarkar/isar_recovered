@@ -53,5 +53,26 @@ class ArticleAuthorsPersistenceTest extends TestCase
             $this->assertArrayHasKey('received', $error->errors());
         }
         $this->assertSame(1, DB::table('article')->count());
+        $root = sys_get_temp_dir().'/isar-upload-'.bin2hex(random_bytes(8));
+        $app->instance('path.public', $root);
+        \Illuminate\Support\Facades\File::ensureDirectoryExists($root.'/assets/articles');
+        try {
+            $filenames = [];
+            for ($i = 0; $i < 2; $i++) {
+                $upload = \Illuminate\Http\UploadedFile::fake()->createWithContent('original.pdf', "%PDF-1.4\n1 0 obj\n<<>>\nendobj");
+                $controller->postArticle(Request::create('/', 'POST', $payload, [], ['file'=>$upload]));
+                $filename = DB::table('article')->orderByDesc('id')->value('file');
+                $this->assertMatchesRegularExpression('/^research-[a-f0-9-]+\\.pdf$/', $filename);
+                $this->assertFileExists($root.'/assets/articles/'.$filename);
+                $filenames[] = $filename;
+            }
+            $this->assertNotSame($filenames[0], $filenames[1]);
+            $lastId = DB::table('article')->max('id');
+            $controller->postArticle(Request::create('/', 'POST', ['id'=>$lastId] + $payload));
+            $this->assertSame($filenames[1], DB::table('article')->where('id', $lastId)->value('file'));
+        } finally {
+            \Illuminate\Support\Facades\File::deleteDirectory($root);
+        }
+
     }
 }

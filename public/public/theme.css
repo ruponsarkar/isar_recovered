@@ -37,6 +37,23 @@ body.public-site {
     animation: none;
 }
 .public-site .manu-btn:hover { background: var(--teal); color: #fff; }
+.public-site .manu-btn::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 2px solid #f5c451;
+    border-radius: inherit;
+    box-shadow: 0 0 12px #f5c45180;
+    pointer-events: none;
+    animation: manuscript-border-pulse 2.4s ease-in-out infinite;
+}
+@keyframes manuscript-border-pulse {
+    0%, 100% { opacity: .35; }
+    50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .public-site .manu-btn::after { animation: none; opacity: 1; }
+}
 .public-site main > .container.mt-2 { margin-top: 18px !important; }
 
 .public-site .paper-card, .public-site .side-card {

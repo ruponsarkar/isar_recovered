@@ -81,8 +81,8 @@ const AddArticleForm = (props) => {
                 <FormJoditEditor name="abstract" value={props.articleData.abstract || ''} onChange={props.handleAddInput} />
             </div>
             <div className="article-field">
-                <label htmlFor="article-file">File</label>
-                <input id="article-file" type="file" onChange={props.handleFile} className="form-control" />
+                <label htmlFor="article-file">PDF File</label>
+                <input id="article-file" type="file" accept=".pdf,application/pdf" onChange={props.handleFile} className="form-control" />
             </div>
         </div>
     );

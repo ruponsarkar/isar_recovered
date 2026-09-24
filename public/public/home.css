@@ -11,12 +11,18 @@ body.home-page {
 }
 
 .home-page .social-strip { background: #233f50; }
-.home-page .isar-nav {
-    background: var(--teal);
+.public-site.home-page .isar-nav {
+    background: #fff;
     border-bottom-color: #193747;
 }
-.home-page .isar-nav .nav-link { color: #fff !important; }
-.home-page .mobile-submit { background: #193747; border-radius: 8px; }
+.public-site.home-page .isar-nav .navbar-brand,
+.public-site.home-page .isar-nav .nav-link { color: #000 !important; }
+.public-site.home-page .isar-nav .nav-link:hover { background: #0000000a; }
+.public-site.home-page .isar-nav .navbar-toggler { color: #000; border-color: #00000040; }
+.public-site.home-page .isar-nav .navbar-toggler-icon {
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='black' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.public-site.home-page .mobile-submit { background: #fff; border-radius: 8px; }
 .home-page .manu-btn {
     background: #193747;
     border-radius: 8px;
