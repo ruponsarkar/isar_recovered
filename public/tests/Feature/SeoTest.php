@@ -39,11 +39,26 @@ class SeoTest extends ReadArticleTest
         $response->assertSee('<meta name="citation_author" content="First Author">', false)
             ->assertSee('<meta name="citation_author" content="Second Author">', false)
             ->assertSee('content="2026/09/15"', false)
-            ->assertSee('https://journals.example.org/viewArticle/research-paper/fulltext.pdf', false)
+            ->assertSee('https://journals.example.org/viewArticle/research-paper/real-article-title.pdf', false)
             ->assertSee('"@type":"ScholarlyArticle"', false)
             ->assertDontSee('tracking=test', false);
         $this->assertSame(1, substr_count($response->getContent(), 'rel="canonical"'));
         $this->assertSame(1, substr_count($response->getContent(), 'name="description"'));
+    }
+
+    public function test_pdf_metadata_matches_public_links_and_doi_is_normalized(): void
+    {
+        DB::table('article')->update(['doi'=>'https://doi.org/10.1234/example']);
+        $response = $this->get('/viewArticle/research-paper')->assertOk()
+            ->assertSee('<meta name="citation_doi" content="10.1234/example">', false)
+            ->assertSee('<meta name="DC.Date.issued" content="2026-09-15">', false)
+            ->assertSee('<meta name="DC.Language" content="en">', false)
+            ->assertSee('<meta name="citation_pdf_url" content="https://journals.example.org/viewArticle/research-paper/real-article-title.pdf">', false)
+            ->assertSee('"contentUrl":"https://journals.example.org/viewArticle/research-paper/real-article-title.pdf"', false);
+        DB::table('article')->update(['doi'=>'undefined', 'file'=>null, 'published_date'=>null]);
+        $this->get('/viewArticle/research-paper')->assertOk()->assertDontSee('name="citation_doi"', false)
+            ->assertDontSee('name="DC.Identifier.DOI"', false)->assertDontSee('name="citation_pdf_url"', false)
+            ->assertDontSee('name="citation_publication_date"', false);
     }
 
     public function test_robots_references_configured_sitemap(): void

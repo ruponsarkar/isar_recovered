@@ -21,6 +21,15 @@ class ApplicationSubmissionTest extends TestCase
         parent::setUp();
         $this->uploadRoot = sys_get_temp_dir().'/isar-submission-test-'.Str::uuid();
         $this->app->instance('path.public', $this->uploadRoot);
+        config(['services.public_api.base_url'=>'']);
+        Schema::create('journals', function (Blueprint $table) {
+            $table->increments('j_id'); $table->string('slug'); $table->string('j_name'); $table->integer('active'); $table->integer('sl_no');
+        });
+        \Illuminate\Support\Facades\DB::table('journals')->insert([
+            ['slug'=>'isarjahss', 'j_name'=>'Arts Journal', 'active'=>1, 'sl_no'=>1],
+            ['slug'=>'science', 'j_name'=>'Science Journal', 'active'=>1, 'sl_no'=>2],
+            ['slug'=>'inactive', 'j_name'=>'Inactive Journal', 'active'=>0, 'sl_no'=>3],
+        ]);
         Schema::create('manuscript', function (Blueprint $table) {
             $table->increments('m_id');
             foreach (['mode', 'type', 'journal', 'author', 'country', 'affiliation', 'email', 'mobile', 'manuscript', 'file'] as $column) {
@@ -49,6 +58,28 @@ class ApplicationSubmissionTest extends TestCase
             'affiliation'=>'Test University', 'phone'=>'1234567890'];
     }
 
+    public function test_submit_links_preserve_journal_context(): void
+    {
+        $html = view('layouts.app', ['journal'=>['slug'=>'science', 'j_id'=>2, 'j_name'=>'Science Journal']])->render();
+        $this->assertStringContainsString('/manuscript?journal=science', $html);
+        $html = view('layouts.app')->render();
+        $this->assertStringNotContainsString('/manuscript?journal=', $html);
+    }
+
+    public function test_manuscript_journal_selection_and_inactive_validation(): void
+    {
+        $this->get('/manuscript?journal=science')->assertOk()
+            ->assertSee('value="science" selected', false)->assertSee('Arts Journal')->assertDontSee('Inactive Journal');
+        $this->get('/manuscript?journal=inactive')->assertOk()->assertDontSee('value="inactive"', false);
+        $this->from('/manuscript')->post('/manuscript', $this->payer() + [
+            'mode'=>'Normal Process', 'article_type'=>'Research article', 'journal'=>'inactive',
+            'title'=>'Test Research', 'file'=>UploadedFile::fake()->create('paper.pdf', 10, 'application/pdf'),
+        ])->assertSessionHasErrors('journal');
+        $this->assertDatabaseCount('manuscript', 0);
+        $this->withSession(['_old_input'=>['journal'=>'isarjahss']])->get('/manuscript?journal=science')
+            ->assertOk()->assertSee('value="isarjahss" selected', false)->assertDontSee('value="science" selected', false);
+    }
+
     public function test_manuscript_is_saved_with_legacy_columns_and_public_upload(): void
     {
         $this->post('/manuscript', $this->payer() + [
@@ -56,7 +87,7 @@ class ApplicationSubmissionTest extends TestCase
             'title'=>'Test Research', 'file'=>UploadedFile::fake()->create('paper.pdf', 10, 'application/pdf'),
         ])->assertRedirect('/manuscript')->assertSessionHas('success');
         $this->assertDatabaseHas('manuscript', ['author'=>'Test Author', 'mobile'=>'1234567890',
-            'type'=>'Research article', 'manuscript'=>'Test Research']);
+            'type'=>'Research article', 'manuscript'=>'Test Research', 'journal'=>'Arts Journal']);
         $this->assertCount(1, File::files($this->uploadRoot.'/assets/manuscript'));
     }
 

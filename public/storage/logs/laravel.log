@@ -7965,3 +7965,76 @@ Stack trace:
 #80 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/bin/phpunit(122): include('/Users/ruponsar...')
 #81 {main}
 "} 
+[2026-09-24 17:15:02] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:210)
+[stacktrace]
+#0 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(135): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(122): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(645): Illuminate\\Log\\LogManager->driver()
+#3 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(274): Illuminate\\Log\\LogManager->error('Uncaught PDOExc...', Array)
+#4 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#5 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(198): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#6 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(246): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleException(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#7 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(270): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleShutdown()
+#8 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#9 {main}
+"} 
+[2026-09-24 17:15:02] laravel.ERROR: Uncaught PDOException: SQLSTATE[HY000] [2002] Operation not permitted in /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+Stack trace:
+#0 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php(70): PDO->__construct('mysql:host=82.2...', 'u476288869_new_...', Object(SensitiveParameterValue), Array)
+#1 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php(45): Illuminate\Database\Connectors\Connector->createPdoConnection('mysql:host=82.2...', 'u476288869_new_...', '9w|BQEHkS', Array)
+#2 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/MySqlConnector.php(24): Illuminate\Database\Connectors\Connector->createConnection('mysql:host=82.2...', Array, Array)
+#3 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/ConnectionFactory.php(184): Illuminate\Database\Connectors\MySqlConnector->connect(Array)
+#4 [internal function]: Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}()
+#5 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(1181): call_user_func(Object(Closure))
+#6 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(486): Illuminate\Database\Connection->getPdo()
+#7 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(414): Illuminate\Database\Connection->getPdoForSelect(false)
+#8 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(753): Illuminate\Database\Connection->Illuminate\Database\{closure}('select column_n...', Array)
+#9 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(720): Illuminate\Database\Connection->runQueryCallback('select column_n...', Array, Object(Closure))
+#10 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(405): Illuminate\Database\Connection->run('select column_n...', Array, Object(Closure))
+#11 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(392): Illuminate\Database\Connection->select('select column_n...', Array, false)
+#12 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Schema/MySqlBuilder.php(58): Illuminate\Database\Connection->selectFromWriteConnection('select column_n...', Array)
+#13 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(338): Illuminate\Database\Schema\MySqlBuilder->getColumnListing('journals')
+#14 Command line code(1): Illuminate\Support\Facades\Facade::__callStatic('getColumnListin...', Array)
+#15 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[HY000] [2002] Operation not permitted (SQL: select column_name as `column_name` from information_schema.columns where table_schema = u476288869_new_isar and table_name = journals) in /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php:760
+Stack trace:
+#0 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(720): Illuminate\Database\Connection->runQueryCallback('select column_n...', Array, Object(Closure))
+#1 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(405): Illuminate\Database\Connection->run('select column_n...', Array, Object(Closure))
+#2 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(392): Illuminate\Database\Connection->select('select column_n...', Array, false)
+#3 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Schema/MySqlBuilder.php(58): Illuminate\Database\Connection->selectFromWriteConnection('select column_n...', Array)
+#4 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(338): Illuminate\Database\Schema\MySqlBuilder->getColumnListing('journals')
+#5 Command line code(1): Illuminate\Support\Facades\Facade::__callStatic('getColumnListin...', Array)
+#6 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught PDOException: SQLSTATE[HY000] [2002] Operation not permitted in /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php:70
+Stack trace:
+#0 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php(70): PDO->__construct('mysql:host=82.2...', 'u476288869_new_...', Object(SensitiveParameterValue), Array)
+#1 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/Connector.php(45): Illuminate\\Database\\Connectors\\Connector->createPdoConnection('mysql:host=82.2...', 'u476288869_new_...', '9w|BQEHkS', Array)
+#2 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/MySqlConnector.php(24): Illuminate\\Database\\Connectors\\Connector->createConnection('mysql:host=82.2...', Array, Array)
+#3 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connectors/ConnectionFactory.php(184): Illuminate\\Database\\Connectors\\MySqlConnector->connect(Array)
+#4 [internal function]: Illuminate\\Database\\Connectors\\ConnectionFactory->Illuminate\\Database\\Connectors\\{closure}()
+#5 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(1181): call_user_func(Object(Closure))
+#6 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(486): Illuminate\\Database\\Connection->getPdo()
+#7 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(414): Illuminate\\Database\\Connection->getPdoForSelect(false)
+#8 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(753): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}('select column_n...', Array)
+#9 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback('select column_n...', Array, Object(Closure))
+#10 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(405): Illuminate\\Database\\Connection->run('select column_n...', Array, Object(Closure))
+#11 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(392): Illuminate\\Database\\Connection->select('select column_n...', Array, false)
+#12 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Schema/MySqlBuilder.php(58): Illuminate\\Database\\Connection->selectFromWriteConnection('select column_n...', Array)
+#13 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(338): Illuminate\\Database\\Schema\\MySqlBuilder->getColumnListing('journals')
+#14 Command line code(1): Illuminate\\Support\\Facades\\Facade::__callStatic('getColumnListin...', Array)
+#15 {main}
+
+Next Illuminate\\Database\\QueryException: SQLSTATE[HY000] [2002] Operation not permitted (SQL: select column_name as `column_name` from information_schema.columns where table_schema = u476288869_new_isar and table_name = journals) in /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php:760
+Stack trace:
+#0 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(720): Illuminate\\Database\\Connection->runQueryCallback('select column_n...', Array, Object(Closure))
+#1 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(405): Illuminate\\Database\\Connection->run('select column_n...', Array, Object(Closure))
+#2 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php(392): Illuminate\\Database\\Connection->select('select column_n...', Array, false)
+#3 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Schema/MySqlBuilder.php(58): Illuminate\\Database\\Connection->selectFromWriteConnection('select column_n...', Array)
+#4 /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(338): Illuminate\\Database\\Schema\\MySqlBuilder->getColumnListing('journals')
+#5 Command line code(1): Illuminate\\Support\\Facades\\Facade::__callStatic('getColumnListin...', Array)
+#6 {main}
+  thrown at /Users/ruponsarkar/Documents/projects/isar/isar/public/vendor/laravel/framework/src/Illuminate/Database/Connection.php:760)
+[stacktrace]
+#0 {main}
+"} 

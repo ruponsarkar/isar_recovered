@@ -2,7 +2,7 @@
 @php
     $description = \Illuminate\Support\Str::limit(trim(strip_tags(html_entity_decode($article->abstract ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'))), 160, '.');
     $authors = implode(', ', array_column($citationAuthors, 'name'));
-    $doi = $article->doi ?? '';
+    $doi = \App\Services\Seo::doi($article->doi ?? '');
     $scholar = $article->googleScholar ?? '';
     $validScholar = filter_var($scholar, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($scholar, PHP_URL_SCHEME) ?? ''), ['https', 'http']);
 @endphp
@@ -11,12 +11,12 @@
 <meta name="author" content="{{ $authors }}">
 <meta name="keywords" content="{{ strip_tags($article->keywords ?? '') }}">
 <meta name="DC.Description" xml:lang="en" content="{{ $description }}">
-<meta name="DC.Identifier.DOI" content="{{ $doi }}">
+@if($doi)<meta name="DC.Identifier.DOI" content="{{ $doi }}">@endif
 <meta name="DC.Identifier.URI" content="{{ \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug)) }}">
-<meta name="DC.Language" content="{{ $journal->language ?? 'en' }}">
+<meta name="DC.Language" content="{{ strtolower($journal->language ?? '') === 'english' ? 'en' : ($journal->language ?? 'en') }}">
 <meta name="DC.Source" content="{{ $journal->j_name }}">
 <meta name="DC.Source.ISSN" content="{{ $journal->issn ?? '' }}">
-<meta name="DC.Date.created" content="{{ $article->published_date ?? '' }}">
+@if(!empty($article->published_date))<meta name="DC.Date.issued" content="{{ $article->published_date }}">@endif
 <meta name="citation_title" content="{{ $article->name }}">
 @foreach($citationAuthors as $citationAuthor)
 <meta name="citation_author" content="{{ $citationAuthor['name'] }}">
@@ -28,8 +28,8 @@
 <meta name="DC.Publisher" content="ISAR Publisher">
 <meta name="citation_publisher" content="ISAR Publisher">
 <meta name="citation_abstract_html_url" content="{{ \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug)) }}">
-<meta name="citation_doi" content="{{ $doi }}">
-<meta name="citation_publication_date" content="{{ str_replace('-', '/', $article->published_date ?? '') }}">
+@if($doi)<meta name="citation_doi" content="{{ $doi }}">@endif
+@if(!empty($article->published_date))<meta name="citation_publication_date" content="{{ str_replace('-', '/', $article->published_date) }}">@endif
 <meta name="citation_journal_title" content="{{ $journal->j_name }}">
 <meta name="citation_issn" content="{{ $journal->issn ?? '' }}">
 <meta name="citation_volume" content="{{ preg_replace('/^volume\s*/i', '', $volume->name ?? '') }}">
@@ -37,7 +37,7 @@
 @php
     $pages = preg_split('/\s*[-–—]\s*/u', trim($article->page ?? ''));
     $articleUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug));
-    $pdfUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug).'/fulltext.pdf');
+    $pdfUrl = \App\Services\Seo::url(\App\Services\Seo::pdfPath($article));
     $schema = ['@context'=>'https://schema.org', '@type'=>'ScholarlyArticle', '@id'=>$articleUrl, 'url'=>$articleUrl,
         'mainEntityOfPage'=>$articleUrl, 'headline'=>$article->name, 'name'=>$article->name,
         'abstract'=>\App\Services\Seo::text($article->abstract), 'keywords'=>\App\Services\Seo::text($article->keywords),

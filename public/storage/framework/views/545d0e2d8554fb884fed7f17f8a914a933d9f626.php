@@ -11,9 +11,9 @@
     };
     if (isset($activePage)) $pageTitle = $activePage['title'].' | '.($journalData['j_name'] ?? 'Journal');
     $metaDescription = $description ?? 'Explore peer-reviewed open access research journals, published articles, editorial boards, and author guidelines at ISAR Publisher.';
-    if ($routeName === 'journal') $metaDescription = \Illuminate\Support\Str::limit(\App\Services\Seo::text($journalData['about'] ?? $journalData['description'] ?? '').' Explore '.($journalData['j_name'] ?? 'this journal').', current issues, archives and editorial board.', 160);
+    if (in_array($routeName, ['journal', 'journal.page'], true)) $metaDescription = \Illuminate\Support\Str::limit(\App\Services\Seo::text($journalData['about'] ?? $journalData['description'] ?? '').' Explore '.($journalData['j_name'] ?? 'this journal').', current issues, archives and editorial board.', 160);
     $canonicalPath = request()->getPathInfo();
-    if ($routeName === 'journal') {
+    if (in_array($routeName, ['journal', 'journal.page'], true)) {
         $canonicalPath = '/journal/'.rawurlencode($journalData['slug'] ?? $slug);
         if (in_array($view ?? '', ['about', 'archive', 'editorial_board'], true)) $canonicalPath .= '?view='.$view;
     }
@@ -30,7 +30,7 @@
     $noindex = str_starts_with($routeName, 'payment') || str_starts_with($routeName, 'pay.') || in_array($routeName, ['manuscript', 'join.author', 'join.reviewer', 'join.editor'], true) || in_array(request()->getPathInfo(), ['/joinReviewer', '/joinEditor'], true);
     $image = !empty($journalData['photo']) ? asset_url('journal/'.$journalData['photo']) : null;
     $siteSchema = ['@context' => 'https://schema.org', '@type' => 'Organization', 'name' => 'ISAR Publisher', 'url' => \App\Services\Seo::url('/')];
-    if ($routeName === 'journal') $siteSchema = ['@context'=>'https://schema.org', '@type'=>'Periodical', 'name'=>$journalData['j_name'] ?? 'Journal', 'url'=>\App\Services\Seo::url('/journal/'.rawurlencode($journalData['slug'] ?? $slug)), 'publisher'=>['@type'=>'Organization','name'=>'ISAR Publisher']] + (!empty($journalData['issn']) ? ['issn'=>$journalData['issn']] : []);
+    if (in_array($routeName, ['journal', 'journal.page'], true)) $siteSchema = ['@context'=>'https://schema.org', '@type'=>'Periodical', 'name'=>$journalData['j_name'] ?? 'Journal', 'url'=>\App\Services\Seo::url('/journal/'.rawurlencode($journalData['slug'] ?? $slug)), 'publisher'=>['@type'=>'Organization','name'=>'ISAR Publisher']] + (!empty($journalData['issn']) ? ['issn'=>$journalData['issn']] : []);
 ?>
 <title><?php echo e($pageTitle); ?></title>
 <meta name="description" content="<?php echo e($metaDescription); ?>">

@@ -14,7 +14,7 @@
     <link href="<?php echo e(asset('theme.css')); ?>" rel="stylesheet">
 </head>
 
-<body class="public-site <?php echo $__env->yieldContent('body-class'); ?>"><?php echo $__env->make('partials.nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><a class="manu-btn" href="<?php echo e(route('manuscript')); ?>"><i
+<body class="public-site <?php echo $__env->yieldContent('body-class'); ?>"><?php echo $__env->make('partials.nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><a class="manu-btn" href="<?php echo e(route('manuscript', ['journal' => data_get($journal ?? null, 'slug') ?: data_get($journal ?? null, 'j_id')])); ?>"><i
             class="fa-solid fa-paper-plane"></i> Submit Manuscript</a>
     <main>
         <?php if(session('success')): ?>

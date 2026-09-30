@@ -114,7 +114,7 @@
                                             class="fa-regular fa-file-lines"></i> Abstract</button>
                                     <?php if(!empty($article['file']) && isset($article['id']) && ctype_digit((string) $article['id'])): ?>
                                         <a class="btn btn-outline-secondary btn-sm"
-                                            href="<?php echo e(route('article.pdf', ['id' => $article['id'], 'filename' => (substr(\Illuminate\Support\Str::slug(strip_tags($article['name'] ?? '')), 0, 150) ?: 'article') . '.pdf'])); ?>"><i
+                                            href="<?php echo e(\App\Services\Seo::url(\App\Services\Seo::pdfPath($article))); ?>"><i
                                                 class="fa-solid fa-file-pdf"></i> PDF</a>
                                     <?php endif; ?>
                                     <a class="btn btn-isar btn-sm"

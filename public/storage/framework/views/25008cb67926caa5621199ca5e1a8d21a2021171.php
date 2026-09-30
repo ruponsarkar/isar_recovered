@@ -32,8 +32,17 @@
                                     <option>Case Report</option>
                                     <option>Letter to editor</option>
                                 </select></div>
-                            <div class="col-md-6"><label class="form-label">Journal</label><input name="journal"
-                                    value="<?php echo e(old('journal')); ?>" class="form-control" required></div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="manuscript-journal">Journal</label>
+                                <select id="manuscript-journal" name="journal" class="form-select" required>
+                                    <option value="">-- Select Journal --</option>
+                                    <?php $__currentLoopData = $journals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php ($journalValue = ($option['slug'] ?? '') ?: (string) $option['j_id']); ?>
+                                        <option value="<?php echo e($journalValue); ?>" <?php if((string) old('journal', $selectedJournal) === (string) $journalValue): echo 'selected'; endif; ?>><?php echo e($option['j_name']); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                                <?php if($journals->isEmpty()): ?><small class="text-muted">No active journals are currently available.</small><?php endif; ?>
+                            </div>
                             <div class="col-md-6"><label class="form-label">Manuscript Title</label><input name="title"
                                     value="<?php echo e(old('title')); ?>" class="form-control" required></div>
                     <?php endif; ?>

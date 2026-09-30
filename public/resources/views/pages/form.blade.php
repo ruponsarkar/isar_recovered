@@ -32,8 +32,17 @@
                                     <option>Case Report</option>
                                     <option>Letter to editor</option>
                                 </select></div>
-                            <div class="col-md-6"><label class="form-label">Journal</label><input name="journal"
-                                    value="{{ old('journal') }}" class="form-control" required></div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="manuscript-journal">Journal</label>
+                                <select id="manuscript-journal" name="journal" class="form-select" required>
+                                    <option value="">-- Select Journal --</option>
+                                    @foreach ($journals as $option)
+                                        @php($journalValue = ($option['slug'] ?? '') ?: (string) $option['j_id'])
+                                        <option value="{{ $journalValue }}" @selected((string) old('journal', $selectedJournal) === (string) $journalValue)>{{ $option['j_name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @if ($journals->isEmpty())<small class="text-muted">No active journals are currently available.</small>@endif
+                            </div>
                             <div class="col-md-6"><label class="form-label">Manuscript Title</label><input name="title"
                                     value="{{ old('title') }}" class="form-control" required></div>
                     @endif

@@ -1,7 +1,7 @@
 <?php
     $description = \Illuminate\Support\Str::limit(trim(strip_tags(html_entity_decode($article->abstract ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8'))), 160, '.');
     $authors = implode(', ', array_column($citationAuthors, 'name'));
-    $doi = $article->doi ?? '';
+    $doi = \App\Services\Seo::doi($article->doi ?? '');
     $scholar = $article->googleScholar ?? '';
     $validScholar = filter_var($scholar, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($scholar, PHP_URL_SCHEME) ?? ''), ['https', 'http']);
 ?>
@@ -10,12 +10,12 @@
 <meta name="author" content="<?php echo e($authors); ?>">
 <meta name="keywords" content="<?php echo e(strip_tags($article->keywords ?? '')); ?>">
 <meta name="DC.Description" xml:lang="en" content="<?php echo e($description); ?>">
-<meta name="DC.Identifier.DOI" content="<?php echo e($doi); ?>">
+<?php if($doi): ?><meta name="DC.Identifier.DOI" content="<?php echo e($doi); ?>"><?php endif; ?>
 <meta name="DC.Identifier.URI" content="<?php echo e(\App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug))); ?>">
-<meta name="DC.Language" content="<?php echo e($journal->language ?? 'en'); ?>">
+<meta name="DC.Language" content="<?php echo e(strtolower($journal->language ?? '') === 'english' ? 'en' : ($journal->language ?? 'en')); ?>">
 <meta name="DC.Source" content="<?php echo e($journal->j_name); ?>">
 <meta name="DC.Source.ISSN" content="<?php echo e($journal->issn ?? ''); ?>">
-<meta name="DC.Date.created" content="<?php echo e($article->published_date ?? ''); ?>">
+<?php if(!empty($article->published_date)): ?><meta name="DC.Date.issued" content="<?php echo e($article->published_date); ?>"><?php endif; ?>
 <meta name="citation_title" content="<?php echo e($article->name); ?>">
 <?php $__currentLoopData = $citationAuthors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $citationAuthor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 <meta name="citation_author" content="<?php echo e($citationAuthor['name']); ?>">
@@ -27,8 +27,8 @@
 <meta name="DC.Publisher" content="ISAR Publisher">
 <meta name="citation_publisher" content="ISAR Publisher">
 <meta name="citation_abstract_html_url" content="<?php echo e(\App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug))); ?>">
-<meta name="citation_doi" content="<?php echo e($doi); ?>">
-<meta name="citation_publication_date" content="<?php echo e(str_replace('-', '/', $article->published_date ?? '')); ?>">
+<?php if($doi): ?><meta name="citation_doi" content="<?php echo e($doi); ?>"><?php endif; ?>
+<?php if(!empty($article->published_date)): ?><meta name="citation_publication_date" content="<?php echo e(str_replace('-', '/', $article->published_date)); ?>"><?php endif; ?>
 <meta name="citation_journal_title" content="<?php echo e($journal->j_name); ?>">
 <meta name="citation_issn" content="<?php echo e($journal->issn ?? ''); ?>">
 <meta name="citation_volume" content="<?php echo e(preg_replace('/^volume\s*/i', '', $volume->name ?? '')); ?>">
@@ -36,7 +36,7 @@
 <?php
     $pages = preg_split('/\s*[-–—]\s*/u', trim($article->page ?? ''));
     $articleUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug));
-    $pdfUrl = \App\Services\Seo::url('/viewArticle/'.rawurlencode($article->slug).'/fulltext.pdf');
+    $pdfUrl = \App\Services\Seo::url(\App\Services\Seo::pdfPath($article));
     $schema = ['@context'=>'https://schema.org', '@type'=>'ScholarlyArticle', '@id'=>$articleUrl, 'url'=>$articleUrl,
         'mainEntityOfPage'=>$articleUrl, 'headline'=>$article->name, 'name'=>$article->name,
         'abstract'=>\App\Services\Seo::text($article->abstract), 'keywords'=>\App\Services\Seo::text($article->keywords),
