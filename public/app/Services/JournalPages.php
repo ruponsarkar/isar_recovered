@@ -11,6 +11,7 @@ class JournalPages
     public static function href(array $page, string $journalSlug): string
     {
         if ($page['type'] !== 'link') return route('journal.page', [$journalSlug, $page['slug']]);
+        if (in_array($page['link_url'] ?? '', ['/action', '/contact-us'], true)) return route('contact', ['journal' => $journalSlug]);
         return \App\Support\JournalPageLink::valid($page['link_url'] ?? null) ? $page['link_url'] : '#';
     }
 

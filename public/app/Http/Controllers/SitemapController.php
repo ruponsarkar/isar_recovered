@@ -51,7 +51,7 @@ class SitemapController extends Controller
 
     public function pages()
     {
-        $paths = ['/', '/AllJournals', '/action', '/open-access-policy', '/CopyrightPolicyPage', '/author-instruction',
+        $paths = ['/', '/AllJournals', '/contact-us', '/open-access-policy', '/CopyrightPolicyPage', '/author-instruction',
             '/processingFees', '/reviewProcess', '/aboutUs', '/RefundPolicy', '/PublicationFee', '/ReviewGuidlines',
             '/EditorGuidlines', '/EthicsPolicies', '/Representatives', '/GenerativeAIPolicy'];
         return $this->xml(array_map(fn ($path) => ['loc' => Seo::url($path)], $paths));

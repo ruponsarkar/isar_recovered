@@ -123,13 +123,14 @@ class JournalPagesTest extends TestCase
         DB::table('volume')->insert([['id'=>11,'j_id'=>1,'name'=>'Alpha Volume'],['id'=>22,'j_id'=>2,'name'=>'Beta Volume']]);
         DB::table('issues')->insert([['id'=>101,'v_id'=>11,'name'=>'Alpha Issue'],['id'=>202,'v_id'=>22,'name'=>'Beta Issue']]);
         DB::table('editors_data')->insert([['id'=>1,'j_id'=>1,'name'=>'Alpha Editor','type'=>'chief','active'=>1],['id'=>2,'j_id'=>2,'name'=>'Beta Editor','type'=>'chief','active'=>1]]);
+        DB::table('editors_data')->insert(['id'=>3,'j_id'=>1,'name'=>'Alpha Deputy','type'=>'deputy_chief','active'=>1]);
         $this->page(1, 'archive', ['type'=>'system','system_key'=>'archive']);
         $this->page(1, 'editors', ['type'=>'system','system_key'=>'editorial_board']);
         $this->get('/journal/alpha')->assertOk()->assertSee('Alpha Issue')->assertSee('/Articles/101', false)->assertDontSee('Beta Issue');
         $this->get('/journal/alpha/pages/archive')->assertOk()->assertSee('Alpha Volume')->assertDontSee('Beta Volume');
         $this->get('/Articles/101')->assertOk()->assertSee('All Articles')->assertSee('Alpha Volume')->assertSee('aria-label="Journal navigation"', false)->assertSee('/journal/alpha/pages/guidelines', false)->assertDontSee('Beta Guidelines');
         $this->get('/Articles/202')->assertOk()->assertSee('Beta Volume')->assertSee('/journal/beta/pages/guidelines', false)->assertDontSee('Alpha Guidelines');
-        $this->get('/journal/alpha/pages/editors')->assertOk()->assertSee('Alpha Editor')->assertDontSee('Beta Editor');
+        $this->get('/journal/alpha/pages/editors')->assertOk()->assertSee('Alpha Editor')->assertSee('Deputy Chief Editor')->assertSee('Alpha Deputy')->assertDontSee('Beta Editor');
     }
 
     public function test_remote_pages_do_not_fall_back_to_stale_local_published_content(): void

@@ -1,4 +1,4 @@
-<?php if (! $__env->hasRenderedOnce('22280dfb-0e0b-4489-9979-9e70529541f4')): $__env->markAsRenderedOnce('22280dfb-0e0b-4489-9979-9e70529541f4'); ?>
+<?php if (! $__env->hasRenderedOnce('07d1a8a2-0a87-4e88-ae14-b37ea5c4aba7')): $__env->markAsRenderedOnce('07d1a8a2-0a87-4e88-ae14-b37ea5c4aba7'); ?>
     <link href="<?php echo e(asset('top-editors.css')); ?>" rel="stylesheet">
 <?php endif; ?>
 <div class="side-card">

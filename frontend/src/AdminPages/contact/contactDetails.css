@@ -1,0 +1,10 @@
+.contact-settings { background: #f5f7fa; min-height: 75vh; color: #243447; }
+.contact-settings h2 { font-size: 1.75rem; font-weight: 600; margin-top: .35rem; }
+.contact-scope { max-width: 650px; }
+.contact-settings-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); gap: 24px; align-items: start; }
+.contact-editor, .contact-preview { background: #fff; border: 1px solid #dce2e8; border-radius: 5px; padding: 24px; min-width: 0; }
+.contact-preview { border-top: 3px solid #1976d2; }
+.contact-preview-eyebrow { color: #2265a7; font-weight: 600; letter-spacing: .04em; }
+.contact-preview dd { white-space: pre-line; overflow-wrap: anywhere; }
+.contact-inherited { display: inline-block; background: #edf4ff; color: #245785; padding: 2px 6px; font-weight: 400; font-size: .75rem; }
+@media (max-width: 1000px) { .contact-settings-layout { grid-template-columns: 1fr; } }

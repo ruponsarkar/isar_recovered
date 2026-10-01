@@ -70,7 +70,8 @@
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><div class="empty">No archive issues are available yet.</div>
                             <?php endif; ?>
                         <?php elseif($view === 'editorial_board'): ?>
-                            <?php $__currentLoopData = ['chief' => 'Chief Editor', 'ass' => 'Editorial Board member']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type => $heading): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php $__currentLoopData = ['chief' => 'Chief Editor', 'deputy_chief' => 'Deputy Chief Editor', 'ass' => 'Editorial Board member']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type => $heading): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if($type === 'deputy_chief' && collect($editors)->where('type', $type)->isEmpty()) continue; ?>
                                 <section class="editor-group">
                                     <h2><?php echo e($heading); ?></h2>
                                     <?php $__empty_1 = true; $__currentLoopData = collect($editors)->where('type',$type); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $editor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
@@ -80,7 +81,7 @@
                                                         src="<?php echo e(asset_url('editors/' . ($editor['image'] ?? ''))); ?>"
                                                         alt="<?php echo e($editor['name'] ?? 'Editor'); ?>"></div>
                                                 <div class="col-md-9"><strong><?php echo e($editor['name'] ?? ''); ?></strong>
-                                                    <div><?php echo e($type === 'chief' ? 'Editor-in-Chief' : 'Editor'); ?></div>
+                                                    <div><?php echo e(['chief' => 'Editor-in-Chief', 'deputy_chief' => 'Deputy Chief Editor', 'ass' => 'Editor'][$type]); ?></div>
                                                     <p><?php echo e($editor['details'] ?? ''); ?></p>
                                                     <?php if($clean($editor['profile'] ?? null)): ?>
                                                         <div>Profile Link: <a href="<?php echo e($editor['profile']); ?>"

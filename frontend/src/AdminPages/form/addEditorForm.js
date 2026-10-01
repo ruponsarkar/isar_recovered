@@ -17,6 +17,7 @@ const AddEditorForm = (props) => {
                             <select name="type" onChange={props.handleAddInput} value={props.editorData.type} className='form-control'>
                                 <option>--Select--</option>
                                 <option value='chief'>Chief</option>
+                                <option value='deputy_chief'>Deputy Chief Editor</option>
                                 <option value='ass'>Associative</option>
                             </select>
                         </div>

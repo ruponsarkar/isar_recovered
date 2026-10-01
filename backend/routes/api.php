@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 
+Route::get('contact-details/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'published']);
+Route::middleware('auth:api')->prefix('admin/contact-details')->group(function () {
+    Route::get('/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'index']);
+    Route::put('/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'update']);
+    Route::delete('/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'destroy']);
+});
+
 Route::post('login', [AuthController::class, 'login']);
 Route::get('journals/{journal}/pages', [JournalPageController::class, 'published']);
 Route::get('journals/{journal}/pages/{page}', [JournalPageController::class, 'show']);

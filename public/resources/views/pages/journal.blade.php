@@ -74,7 +74,8 @@
                             @empty<div class="empty">No archive issues are available yet.</div>
                             @endforelse
                         @elseif($view === 'editorial_board')
-                            @foreach (['chief' => 'Chief Editor', 'ass' => 'Editorial Board member'] as $type => $heading)
+                            @foreach (['chief' => 'Chief Editor', 'deputy_chief' => 'Deputy Chief Editor', 'ass' => 'Editorial Board member'] as $type => $heading)
+                                @continue($type === 'deputy_chief' && collect($editors)->where('type', $type)->isEmpty())
                                 <section class="editor-group">
                                     <h2>{{ $heading }}</h2>
                                     @forelse(collect($editors)->where('type',$type) as $editor)
@@ -84,7 +85,7 @@
                                                         src="{{ asset_url('editors/' . ($editor['image'] ?? '')) }}"
                                                         alt="{{ $editor['name'] ?? 'Editor' }}"></div>
                                                 <div class="col-md-9"><strong>{{ $editor['name'] ?? '' }}</strong>
-                                                    <div>{{ $type === 'chief' ? 'Editor-in-Chief' : 'Editor' }}</div>
+                                                    <div>{{ ['chief' => 'Editor-in-Chief', 'deputy_chief' => 'Deputy Chief Editor', 'ass' => 'Editor'][$type] }}</div>
                                                     <p>{{ $editor['details'] ?? '' }}</p>
                                                     @if ($clean($editor['profile'] ?? null))
                                                         <div>Profile Link: <a href="{{ $editor['profile'] }}"

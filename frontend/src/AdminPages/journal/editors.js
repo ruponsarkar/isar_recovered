@@ -253,7 +253,7 @@ const Editors = () => {
         const columns = [
             { field: 'name', headerName: 'Name', width: 200 },
             { field: 'details', headerName: 'Details', width: 250 },
-            { field: 'type', headerName: 'Type', width: 100 },
+            { field: 'type', headerName: 'Type', width: 180, valueFormatter: ({ value }) => value === 'deputy_chief' ? 'Deputy Chief Editor' : value },
             {
                 field: 'image', headerName: 'photo', width: 150,
                 renderCell: (field) => (

@@ -28,6 +28,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NaturePeopleIcon from '@mui/icons-material/NaturePeople';
 import HailIcon from '@mui/icons-material/Hail';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 
 import { InputBase, styled, Menu, MenuItem } from '@mui/material';
 import Container from '@mui/material/Container';
@@ -133,6 +134,13 @@ const Dashboard = (props) => {
               <LeaderboardSharpIcon />
             </ListItemIcon>
             <ListItemText>Dashboard</ListItemText>
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => { navigate('/admin/contact-details'); setMobileOpen(false); }}>
+            <ListItemIcon><ContactMailIcon /></ListItemIcon>
+            <ListItemText primary="Contact Details" />
           </ListItemButton>
         </ListItem>
 

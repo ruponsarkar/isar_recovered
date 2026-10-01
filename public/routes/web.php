@@ -33,7 +33,8 @@ Route::get('/joinReviewer', [ApplicationController::class, 'form'])->defaults('t
 Route::post('/joinReviewer', [ApplicationController::class, 'submit'])->defaults('type','reviewer');
 Route::get('/joinEditor', [ApplicationController::class, 'form'])->defaults('type','editor');
 Route::post('/joinEditor', [ApplicationController::class, 'submit'])->defaults('type','editor');
-Route::get('/action', [PublicController::class, 'contact'])->name('contact');
+Route::get('/contact-us', [PublicController::class, 'contact'])->name('contact');
+Route::get('/action', fn (\Illuminate\Http\Request $request) => redirect()->route('contact', $request->only('journal'), 301));
 Route::get('/Payment', [PaymentController::class, 'index'])->name('payment');
 Route::post('/PaymentDetails', [PaymentController::class, 'details'])->name('payment.details');
 Route::get('/PaymentDetails', [PaymentController::class, 'showDetails'])->name('payment.details.show');

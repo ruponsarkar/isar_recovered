@@ -44,7 +44,7 @@
                         </li> --}}
                         <li class="nav-item"><a class="nav-link" href="/aboutUs">About Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="/Payment">Payment</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/action">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact Us</a></li>
                         <li class="nav-item mobile-submit"><a class="nav-link" href="{{ route('manuscript', ['journal' => data_get($journal ?? null, 'slug') ?: data_get($journal ?? null, 'j_id')]) }}">Submit Manuscript</a>
                         </li>
                     </ul>

@@ -14,27 +14,24 @@
                 <h6>Useful Links</h6>
                 <a href="/AllJournals">Journals</a>
                 <a href="/aboutUs">About Us</a>
-                <a href="/PublicationFee">Publication Fee</a>
-                <a href="/action">Contact Us</a>
+                {{-- <a href="/PublicationFee">Publication Fee</a> --}}
+                <a href="{{ route('contact', ['journal' => data_get($journal ?? null, 'slug') ?: data_get($journal ?? null, 'j_id')]) }}">Contact Us</a>
             </div>
             <div class="col-lg-4">
                 <h6>Contact</h6>
-                <p><i class="fa-solid fa-location-dot"></i> H.No. 61, Ward No. 4, Bokakhat, Golaghat, Assam, India,
-                    785612</p>
-                <p><i class="fa-solid fa-envelope"></i> <a class="d-inline"
-                        href="mailto:contact@isarpublisher.com">contact@isarpublisher.com</a></p>
-                <p><i class="fa-solid fa-phone"></i> <a class="d-inline" href="tel:+918638994354">+91 8638994354</a></p>
+                @include('partials.contact-details')
             </div>
         </div>
         <hr>
-        <p class="small mb-0">Except where otherwise noted, content is licensed under a Creative Commons
-            Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).</p>
+        <p class="small mb-0">
+            <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" style="border-width: 0px;">
+            This work is licensed under a <a class="d-inline" href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a></p>
     </div>
     <div class="copyright">
         @if ($journalName = data_get($journal ?? null, 'j_name'))
-            © {{ $journalName }}. All Rights Reserved.
+            © {{ date('Y') }} | {{ $journalName }}. Published by ISAR Publisher.
         @else
-            © {{ date('Y') }} ISAR Publisher. All rights reserved.
+            © {{ date('Y') }} | ISAR Publisher
         @endif
         Developed by <a class="d-inline" href="https://pageuptechnologies.com/">PageUp Technologies</a>
     </div>

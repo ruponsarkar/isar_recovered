@@ -89,7 +89,7 @@ class PublicController extends Controller
         }
         if (($activePage['type'] ?? null) === 'link') {
             abort_unless(\App\Support\JournalPageLink::valid($activePage['link_url'] ?? null), 404);
-            return redirect()->away($activePage['link_url']);
+            return redirect()->away(JournalPages::href($activePage, $record['slug'] ?? $journal));
         }
         $jid = $record['j_id'] ?? null;
         $filter = fn(array $rows) => $jid === null ? $rows : array_values(array_filter($rows, fn($r) => (string) ($r['j_id'] ?? '') === (string) $jid));
@@ -131,8 +131,20 @@ class PublicController extends Controller
         abort_unless(isset($pages[$page]), 404);
         return view('pages.policy', $this->globals() + ['title' => $pages[$page][0], 'partial' => $pages[$page][1]]);
     }
-    public function contact()
+    public function contact(Request $request)
     {
-        return view('pages.contact', $this->globals());
+        $key = $request->validate(['journal'=>['nullable','string','max:255']])['journal'] ?? null;
+        $journal = null;
+        $journalPages = null;
+        $slug = null;
+        if ($key) {
+            $api = $this->api('journalDetails/'.rawurlencode($key));
+            $remote = !empty($api['journal']);
+            $journal = $remote ? $api['journal'] : ($this->first('journals', 'slug', $key) ?: (ctype_digit($key) ? $this->first('journals', 'j_id', $key) : []));
+            abort_unless($journal, 404);
+            $journalPages = app(JournalPages::class)->published($journal, $remote);
+            $slug = $journal['slug'] ?? (string) $journal['j_id'];
+        }
+        return view('pages.contact', compact('journal', 'journalPages', 'slug') + $this->globals());
     }
 }

@@ -3,6 +3,9 @@ import API from "./apiConfig";
 const journalPagesPath = slug => `/admin/journals/${encodeURIComponent(slug)}/pages`;
 
 export default {
+    getContactDetails(scope) { return API.get(`/admin/contact-details/${encodeURIComponent(scope)}`); },
+    updateContactDetails(scope, data) { return API.put(`/admin/contact-details/${encodeURIComponent(scope)}`, data); },
+    resetContactDetails(scope) { return API.delete(`/admin/contact-details/${encodeURIComponent(scope)}`); },
     deleteEditor(id, j_id) { return API.post('/deleteEditor', { id, j_id }); },
     deleteIndexing(id, j_id) { return API.post('/deleteIndexing', { id, j_id }); },
     deleteCertificate(id, j_id) { return API.post('/deleteCertificate', { id, j_id }); },
