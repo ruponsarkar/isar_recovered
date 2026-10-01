@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark isar-nav sticky-top" aria-label="Journal navigation">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('journal', $slug) }}">{{ ($journal['abbr_title'] ?? '') ?: ($journal['j_name'] ?? 'Journal') }}</a>
+        <a class="navbar-brand" href="{{ route('journal', $slug) }}">{{ data_get($journal, 'abbr_title') ?: data_get($journal, 'j_name', 'Journal') }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#journalNav" aria-controls="journalNav" aria-expanded="false" aria-label="Toggle journal navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="journalNav">
             <ul class="navbar-nav ms-auto">

@@ -127,6 +127,8 @@ class JournalPagesTest extends TestCase
         $this->page(1, 'editors', ['type'=>'system','system_key'=>'editorial_board']);
         $this->get('/journal/alpha')->assertOk()->assertSee('Alpha Issue')->assertSee('/Articles/101', false)->assertDontSee('Beta Issue');
         $this->get('/journal/alpha/pages/archive')->assertOk()->assertSee('Alpha Volume')->assertDontSee('Beta Volume');
+        $this->get('/Articles/101')->assertOk()->assertSee('All Articles')->assertSee('Alpha Volume')->assertSee('aria-label="Journal navigation"', false)->assertSee('/journal/alpha/pages/guidelines', false)->assertDontSee('Beta Guidelines');
+        $this->get('/Articles/202')->assertOk()->assertSee('Beta Volume')->assertSee('/journal/beta/pages/guidelines', false)->assertDontSee('Alpha Guidelines');
         $this->get('/journal/alpha/pages/editors')->assertOk()->assertSee('Alpha Editor')->assertDontSee('Beta Editor');
     }
 
@@ -158,6 +160,23 @@ class JournalPagesTest extends TestCase
         ]);
         $this->get('/journal/alpha/pages/remote')->assertOk()->assertSee('Remote content only')->assertDontSee('Alpha rules only');
         $this->get('/journal/alpha/pages/guidelines')->assertNotFound();
+    }
+
+    public function test_remote_issue_uses_its_journal_navigation(): void
+    {
+        config(['services.public_api.base_url'=>'https://api.example.test/api']);
+        Http::swap(new \Illuminate\Http\Client\Factory);
+        Http::fake([
+            'https://api.example.test/api/getArticle/303'=>Http::response([
+                'getIssue'=>['id'=>303,'v_id'=>33,'name'=>'Remote Issue'],
+                'getVol'=>['id'=>33,'j_id'=>1,'name'=>'Remote Volume'],
+                'getJournal'=>['j_id'=>1,'slug'=>'alpha','j_name'=>'Remote Alpha'],
+                'article'=>[],
+            ]),
+            'https://api.example.test/api/journals/alpha/pages'=>Http::response(['pages'=>[['id'=>200,'journal_id'=>1,'slug'=>'remote','title'=>'Remote policy','type'=>'content','parent_id'=>null,'sort_order'=>0,'show_in_nav'=>true,'is_published'=>true]]]),
+            '*'=>Http::response([]),
+        ]);
+        $this->get('/Articles/303')->assertOk()->assertSee('All Articles')->assertSee('Remote Volume')->assertSee('Remote Alpha')->assertSee('aria-label="Journal navigation"', false)->assertSee('/journal/alpha/pages/remote', false)->assertDontSee('Alpha Guidelines');
     }
 
     public function test_sitemap_contains_only_published_journal_content(): void

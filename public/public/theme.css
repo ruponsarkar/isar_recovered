@@ -24,11 +24,23 @@ body.public-site {
 .public-site .isar-nav .navbar-toggler { border-color: #ffffff70; }
 .public-site .isar-nav .nav-link { color: #fff !important; }
 .public-site .isar-nav .nav-link:hover { background: #ffffff14; }
+.public-site .mobile-submit { background: var(--ink); border-radius: 8px; }
+.public-site .isar-nav.default-nav {
+    background: #fff;
+    border-bottom-color: #193747;
+}
+.public-site .isar-nav.default-nav .navbar-brand,
+.public-site .isar-nav.default-nav .nav-link { color: #000 !important; }
+.public-site .isar-nav.default-nav .nav-link:hover { background: #0000000a; }
+.public-site .isar-nav.default-nav .navbar-toggler { color: #000; border-color: #00000040; }
+.public-site .isar-nav.default-nav .navbar-toggler-icon {
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='black' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.public-site .default-nav .mobile-submit { background: #fff; border-radius: 8px; }
 .public-site .dropdown-menu { border-color: var(--theme-border); border-radius: 8px; box-shadow: 0 8px 22px #17384a18; }
 .public-site .dropdown-item { color: var(--ink); }
 .public-site .dropdown-item:hover, .public-site .dropdown-item:focus { color: #195759; background: #edf4f3; }
 .public-site .dropdown-item.active, .public-site .dropdown-item:active { color: #fff; background: var(--teal); }
-.public-site .mobile-submit { background: var(--ink); border-radius: 8px; }
 .public-site .manu-btn {
     color: #fff;
     background: var(--ink);

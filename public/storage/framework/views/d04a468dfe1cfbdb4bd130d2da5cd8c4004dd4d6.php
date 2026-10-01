@@ -65,6 +65,9 @@
                 <?php if(!empty($article->designation)): ?><div class="read-article-affiliations"><?php echo e(author_text($article->designation)); ?></div><?php endif; ?>
             </div>
             <div class="read-article-field">Published Date: <strong><?php echo e($article->published_date ?? '—'); ?></strong></div>
+            <?php if($doi): ?>
+                <div class="read-article-field">DOI: <a href="https://doi.org/<?php echo e($doi); ?>" target="_blank" rel="noopener"><?php echo e($doi); ?></a></div>
+            <?php endif; ?>
             <?php $__currentLoopData = ['received'=>'Received', 'revised'=>'Revised', 'accepted'=>'Accepted']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field=>$label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php if(!empty($article->$field)): ?>
                     <div class="read-article-field"><?php echo e($label); ?>: <strong><?php echo e($article->$field); ?></strong></div>

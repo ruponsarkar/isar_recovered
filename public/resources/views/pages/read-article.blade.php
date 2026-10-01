@@ -66,6 +66,9 @@
                 @if(!empty($article->designation))<div class="read-article-affiliations">{{ author_text($article->designation) }}</div>@endif
             </div>
             <div class="read-article-field">Published Date: <strong>{{ $article->published_date ?? '—' }}</strong></div>
+            @if($doi)
+                <div class="read-article-field">DOI: <a href="https://doi.org/{{ $doi }}" target="_blank" rel="noopener">{{ $doi }}</a></div>
+            @endif
             @foreach(['received'=>'Received', 'revised'=>'Revised', 'accepted'=>'Accepted'] as $field=>$label)
                 @if(!empty($article->$field))
                     <div class="read-article-field">{{ $label }}: <strong>{{ $article->$field }}</strong></div>

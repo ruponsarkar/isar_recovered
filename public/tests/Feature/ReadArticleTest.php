@@ -34,6 +34,21 @@ class ReadArticleTest extends TestCase
         $this->get('/viewArticle/research-paper')->assertOk()->assertSee('Real article title')->assertSee('Schema Journal')->assertSee('1234-5678')->assertSee('First Author<sup>1*</sup>', false)->assertSee('read-article-affiliations')->assertSee('<sup>1*</sup>Test University', false)->assertSee('Safe &quot;quoted&quot; abstract', false)->assertDontSee('javascript:alert(1)', false);
     }
 
+    public function test_article_shows_its_journal_navigation(): void
+    {
+        Schema::table('journals', function (Blueprint $table) { $table->string('slug')->nullable(); });
+        DB::table('journals')->where('j_id', 9)->update(['slug'=>'schema-journal']);
+        (require __DIR__.'/../../../backend/database/migrations/2026_09_16_000001_create_journal_pages_table.php')->up();
+        foreach ([9=>'Journal Guidelines', 10=>'Other Journal Guidelines'] as $journalId=>$title) {
+            DB::table('journal_pages')->insert(['journal_id'=>$journalId, 'slug'=>'guidelines', 'title'=>$title, 'type'=>'content', 'sort_order'=>0, 'is_published'=>true, 'show_in_nav'=>true, 'show_in_tabs'=>false]);
+        }
+        $this->get('/viewArticle/research-paper')->assertOk()
+            ->assertSee('aria-label="Journal navigation"', false)
+            ->assertSee('/journal/schema-journal/pages/guidelines', false)
+            ->assertSee('Journal Guidelines')->assertDontSee('Other Journal Guidelines')
+            ->assertDontSee('id="mainNav"', false);
+    }
+
     public function test_missing_and_unpublished_articles_are_404(): void
     {
         $this->get('/viewArticle/missing')->assertNotFound();

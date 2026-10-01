@@ -119,7 +119,6 @@ const Navup = () => {
 
 
                 <NavLink onClick={() => setExpanded(false)} className="nav-link scrollt" to="aboutUs">About Us</NavLink>
-                <NavLink onClick={() => setExpanded(false)} className="nav-link scrollt" to="PublicationFee">Publication Fee</NavLink>
                 <NavLink onClick={() => setExpanded(false)} className="nav-link scrollt" to="EthicsPolicies">Ethics & Policies</NavLink>
                 <NavLink onClick={() => setExpanded(false)} className="nav-link scrollt" to="Payment">Payment</NavLink>
                 <NavLink onClick={() => setExpanded(false)} className="nav-link scrollt" to="action">Contact Us</NavLink>
@@ -147,4 +146,3 @@ const Navup = () => {
 }
 
 export default Navup;
-

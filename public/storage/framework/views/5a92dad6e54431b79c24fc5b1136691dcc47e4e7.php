@@ -10,7 +10,7 @@
     <?php if(isset($journalPages)): ?>
         <?php echo $__env->make('partials.journal-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <?php else: ?>
-        <nav class="navbar navbar-expand-lg navbar-dark isar-nav sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark isar-nav default-nav sticky-top">
             <div class="container-fluid"><a class="navbar-brand" href="/">ISAR Publisher</a><button
                     class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNav"
                     aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -22,7 +22,6 @@
                         
                         
                         <li class="nav-item"><a class="nav-link" href="/aboutUs">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/PublicationFee">Publication Fee</a></li>
                         <li class="nav-item"><a class="nav-link" href="/Payment">Payment</a></li>
                         <li class="nav-item"><a class="nav-link" href="/action">Contact Us</a></li>
                         <li class="nav-item mobile-submit"><a class="nav-link" href="<?php echo e(route('manuscript', ['journal' => data_get($journal ?? null, 'slug') ?: data_get($journal ?? null, 'j_id')])); ?>">Submit Manuscript</a>

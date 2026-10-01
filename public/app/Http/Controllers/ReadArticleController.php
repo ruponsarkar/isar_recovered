@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Services\Seo;
+use App\Services\JournalPages;
 
 class ReadArticleController extends Controller
 {
@@ -16,6 +17,8 @@ class ReadArticleController extends Controller
         $volume = $issue ? DB::table('volume')->where('id', $issue->v_id)->first() : null;
         $journal = $volume ? DB::table('journals')->where('j_id', $volume->j_id)->first() : null;
         abort_unless($issue && $volume && $journal, 404);
+        $journalPages = app(JournalPages::class)->published((array) $journal, false);
+        $slug = ($journal->slug ?? null) ?: (string) $journal->j_id;
 
         $citationAuthors = Schema::hasTable('article_authors')
             ? DB::table('article_authors')->where('article_id', $article->id)->orderBy('position')->get()
@@ -26,7 +29,7 @@ class ReadArticleController extends Controller
         }
         $citationAuthors = array_values(array_filter($citationAuthors, fn ($author) => $author['name'] !== ''));
         $description = \Illuminate\Support\Str::limit(Seo::text($article->abstract), 160, '.');
-        return view('pages.read-article', compact('article', 'issue', 'volume', 'journal', 'citationAuthors', 'description') + ['title' => $article->name]);
+        return view('pages.read-article', compact('article', 'issue', 'volume', 'journal', 'journalPages', 'slug', 'citationAuthors', 'description') + ['title' => $article->name]);
     }
 
     public function pdf(string $id, string $filename)

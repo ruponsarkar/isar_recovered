@@ -118,8 +118,12 @@ class PublicController extends Controller
         $issue = $this->first('issues', 'id', $articles) ?: ($api['getIssue'] ?? []);
         $rows = $this->rows('article', 'i_id', $articles) ?: ($api['article'] ?? []);
         $rows = array_values(array_filter($rows, fn($r) => !isset($r['status']) || (int) $r['status'] === 1));
-        $volume = !empty($issue['v_id']) ? $this->first('volume', 'id', $issue['v_id']) : ($api['getVol'] ?? []);
-        return view('pages.articles', $this->globals() + compact('issue', 'volume') + ['slug' => $articles, 'articles' => $rows]);
+        $volume = (!empty($issue['v_id']) ? $this->first('volume', 'id', $issue['v_id']) : []) ?: ($api['getVol'] ?? []);
+        $remote = !empty($api['getJournal']);
+        $journal = $remote ? $api['getJournal'] : (!empty($volume['j_id']) ? $this->first('journals', 'j_id', $volume['j_id']) : []);
+        $journalPages = $journal ? app(JournalPages::class)->published($journal, $remote) : null;
+        $slug = $journal['slug'] ?? (string) ($journal['j_id'] ?? $articles);
+        return view('pages.articles', compact('issue', 'volume', 'journal', 'journalPages', 'slug') + ['articles' => $rows] + $this->globals());
     }
     public function policy(string $page)
     {
