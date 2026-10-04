@@ -30,6 +30,30 @@ class JournalPagesTest extends TestCase
         $this->page(2, 'guidelines', ['title'=>'Beta Guidelines','content'=>'<p>Beta rules only</p>']);
     }
 
+    public function test_journal_indexing_ignores_home_flag_and_excludes_other_journals(): void
+    {
+        Schema::create('indexing', function (Blueprint $t) {
+            $t->integer('id'); $t->integer('j_id'); $t->integer('isShow'); $t->string('img');
+        });
+        DB::table('indexing')->insert([
+            ['id'=>1,'j_id'=>1,'isShow'=>0,'img'=>'alpha-index.png'],
+            ['id'=>2,'j_id'=>2,'isShow'=>1,'img'=>'beta-index.png'],
+        ]);
+        $this->get('/journal/alpha')->assertOk()->assertSee('alpha-index.png')->assertDontSee('beta-index.png');
+        config(['services.public_api.base_url'=>'https://api.example.test']);
+        Http::swap(new \Illuminate\Http\Client\Factory);
+        Http::fake([
+            '*/journalDetails/alpha'=>Http::response(['journal'=>['j_id'=>1,'slug'=>'alpha','j_name'=>'Alpha']]),
+            '*/journals/alpha/pages'=>Http::response(['pages'=>[]]),
+            '*/getIndexingById/alpha'=>Http::response(['indexing'=>[
+                ['j_id'=>1,'isShow'=>0,'img'=>'remote-alpha.png'],
+                ['j_id'=>2,'isShow'=>1,'img'=>'remote-beta.png'],
+            ]]),
+            '*'=>Http::response([]),
+        ]);
+        $this->get('/journal/alpha')->assertOk()->assertSee('remote-alpha.png')->assertDontSee('remote-beta.png');
+    }
+
     public function test_journal_sidebar_only_shows_active_impact_factors(): void
     {
         Schema::create('impact_factors', function (Blueprint $table) {

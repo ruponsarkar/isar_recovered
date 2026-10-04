@@ -8,6 +8,7 @@ class PublicSidebarData {
         $journals=$this->rows('journals') ?: ($api['journals']??[]);
         $editors=$this->rows('editors_data') ?: ($api['topEditors']??[]);
         $indexings=$this->rows('indexing') ?: ($api['indexings_unique']??[]);
+        $indexings = collect($indexings)->filter(fn ($row) => (string) ($row['isShow'] ?? '') === '1')->sortByDesc('id')->values()->all();
         return compact('journals','editors','indexings')+['topEditors'=>$editors,'globalIndexings'=>$indexings];
     }
     private function api(string $path): array {

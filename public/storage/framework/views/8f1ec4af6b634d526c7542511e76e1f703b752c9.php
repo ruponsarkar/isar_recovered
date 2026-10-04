@@ -1,4 +1,4 @@
-<?php if (! $__env->hasRenderedOnce('07d1a8a2-0a87-4e88-ae14-b37ea5c4aba7')): $__env->markAsRenderedOnce('07d1a8a2-0a87-4e88-ae14-b37ea5c4aba7'); ?>
+<?php if (! $__env->hasRenderedOnce('98659f1c-df43-45f1-99ae-8fbbbdc3837d')): $__env->markAsRenderedOnce('98659f1c-df43-45f1-99ae-8fbbbdc3837d'); ?>
     <link href="<?php echo e(asset('top-editors.css')); ?>" rel="stylesheet">
 <?php endif; ?>
 <div class="side-card">
@@ -39,11 +39,11 @@
         <div class="side-card">
             <div class="section-title">Indexing &amp; Abstracting</div>
             <div class="p-2 d-flex flex-wrap gap-2 justify-content-center">
-                <?php $__currentLoopData = array_slice(array_values($indexings), 0, 8); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $indexing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <?php ($indexingImage = $indexing['image'] ?? ($indexing['photo'] ?? ($indexing['logo'] ?? null))); ?><?php if($indexingImage): ?>
-                        <img src="<?php echo e(asset_url('indexing/' . $indexingImage)); ?>"
+                <?php $__currentLoopData = array_values($indexings); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $indexing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php ($indexingImage = $indexing['img'] ?? ($indexing['image'] ?? ($indexing['photo'] ?? ($indexing['logo'] ?? null)))); ?><?php if($indexingImage): ?>
+                        <a href="<?php echo e($indexing['link'] ?? '#'); ?>" target="_blank" rel="noopener"><img src="<?php echo e(asset_url('indexing/' . $indexingImage)); ?>"
                             alt="<?php echo e($indexing['name'] ?? 'Indexing service'); ?>"
-                        style="max-width:72px;max-height:48px;object-fit:contain"><?php else: ?><span
+                        style="max-width:72px;max-height:48px;object-fit:contain"></a><?php else: ?><span
                             class="badge text-bg-light"><?php echo e($indexing['name'] ?? 'Indexed'); ?></span>
                     <?php endif; ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

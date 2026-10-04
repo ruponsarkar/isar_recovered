@@ -39,11 +39,11 @@
         <div class="side-card">
             <div class="section-title">Indexing &amp; Abstracting</div>
             <div class="p-2 d-flex flex-wrap gap-2 justify-content-center">
-                @foreach (array_slice(array_values($indexings), 0, 8) as $indexing)
-                    @php($indexingImage = $indexing['image'] ?? ($indexing['photo'] ?? ($indexing['logo'] ?? null)))@if ($indexingImage)
-                        <img src="{{ asset_url('indexing/' . $indexingImage) }}"
+                @foreach (array_values($indexings) as $indexing)
+                    @php($indexingImage = $indexing['img'] ?? ($indexing['image'] ?? ($indexing['photo'] ?? ($indexing['logo'] ?? null))))@if ($indexingImage)
+                        <a href="{{ $indexing['link'] ?? '#' }}" target="_blank" rel="noopener"><img src="{{ asset_url('indexing/' . $indexingImage) }}"
                             alt="{{ $indexing['name'] ?? 'Indexing service' }}"
-                        style="max-width:72px;max-height:48px;object-fit:contain">@else<span
+                        style="max-width:72px;max-height:48px;object-fit:contain"></a>@else<span
                             class="badge text-bg-light">{{ $indexing['name'] ?? 'Indexed' }}</span>
                     @endif
                 @endforeach
