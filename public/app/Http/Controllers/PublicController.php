@@ -3,12 +3,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use App\Services\PublicSidebarData;
+use App\Services\JournalPages;
 
 class PublicController extends Controller
 {
     private function api(string $path): array
     {
-        $base = rtrim((string) env('PUBLIC_API_BASE_URL'), '/');
+        $base = rtrim((string) config('services.public_api.base_url'), '/');
         if (!$base)
             return [];
         try {
@@ -39,10 +41,7 @@ class PublicController extends Controller
     }
     private function globals(): array
     {
-        $a = $this->api('getJournals');
-        $editors = $this->rows('editors_data') ?: ($a['topEditors'] ?? []);
-        $indexings = $this->rows('indexing') ?: ($a['indexings_unique'] ?? []);
-        return ['journals' => $this->rows('journals') ?: ($a['journals'] ?? []), 'topEditors' => $editors, 'globalIndexings' => $indexings, 'editors' => $editors, 'indexings' => $indexings];
+        return app(PublicSidebarData::class)->get();
     }
     public function home()
     {
@@ -56,7 +55,12 @@ class PublicController extends Controller
     {
         return view('pages.journals', $this->globals());
     }
-    public function journal(string $journal, Request $request)
+    public function journalPage(string $journal, string $page, Request $request)
+    {
+        return $this->journal($journal, $request, $page);
+    }
+
+    public function journal(string $journal, Request $request, ?string $page = null)
     {
         $local = $this->first('journals', 'slug', $journal);
         if (!$local && ctype_digit($journal))
@@ -64,6 +68,29 @@ class PublicController extends Controller
         $api = $this->api("journalDetails/$journal");
         $remote = !empty($api['journal']);
         $record = $remote ? $api['journal'] : $local;
+        abort_unless($record, 404);
+        $journalPages = app(JournalPages::class)->published($record, $remote);
+        $activePage = null;
+        if ($journalPages !== null) {
+            $readable = collect($journalPages)->where('type', '!=', 'group');
+            if ($page !== null) {
+                $activePage = $readable->firstWhere('slug', $page);
+                abort_unless($activePage, 404);
+            } elseif ($request->has('view')) {
+                $legacy = $request->query('view');
+                $activePage = $legacy === 'about' ? $readable->firstWhere('slug', 'about') : $readable->firstWhere('system_key', $legacy);
+                abort_unless($activePage, 404);
+            } else {
+                $localPages = $readable->where('type', '!=', 'link');
+                $activePage = $localPages->firstWhere('system_key', 'current_issue') ?? $localPages->firstWhere('show_in_tabs', true) ?? $localPages->first();
+            }
+        } else {
+            abort_if($page !== null, 404);
+        }
+        if (($activePage['type'] ?? null) === 'link') {
+            abort_unless(\App\Support\JournalPageLink::valid($activePage['link_url'] ?? null), 404);
+            return redirect()->away(JournalPages::href($activePage, $record['slug'] ?? $journal));
+        }
         $jid = $record['j_id'] ?? null;
         $filter = fn(array $rows) => $jid === null ? $rows : array_values(array_filter($rows, fn($r) => (string) ($r['j_id'] ?? '') === (string) $jid));
         $volumes = $remote ? ($api['volume'] ?? []) : $filter($this->rows('volume'));
@@ -78,10 +105,12 @@ class PublicController extends Controller
         $ia = $this->api("getIndexingById/$journal");
         $ca = $this->api("getCeertificateById/$journal");
         $fa = $this->api("getImpactFactor/$journal");
+        $factors = collect($remote ? ($fa['impact'] ?? []) : $filter($this->rows('impact_factors')))->filter(fn($factor) => (string) ($factor['isActive'] ?? '') === '1')->values()->all();
         $tab = $request->query('view', 'current_issue');
         if (!in_array($tab, ['about', 'current_issue', 'archive', 'editorial_board'], true))
             $tab = 'current_issue';
-        return view('pages.journal', ['journal' => $record, 'slug' => $journal, 'articles' => $articles, 'editors' => $editors, 'issues' => $issues, 'volumes' => $volumes, 'indexings' => $remote ? ($ia['indexing'] ?? $api['indexing'] ?? []) : $filter($this->rows('indexing')), 'certificates' => $remote ? ($ca['certificate'] ?? []) : $filter($this->rows('certificate')), 'factors' => $remote ? ($fa['impact'] ?? []) : $filter($this->rows('impact_factors')), 'chief' => collect($editors)->firstWhere('type', 'chief') ?: ($api['chief'] ?? null), 'view' => $tab] + $this->globals());
+        if ($journalPages !== null) $tab = $activePage ? ($activePage['type'] === 'system' ? $activePage['system_key'] : 'content') : 'empty';
+        return view('pages.journal', ['journalPages' => $journalPages, 'activePage' => $activePage, 'journal' => $record, 'slug' => $record['slug'] ?? $journal, 'articles' => $articles, 'editors' => $editors, 'issues' => $issues, 'volumes' => $volumes, 'indexings' => $filter($remote ? ($ia['indexing'] ?? $api['indexing'] ?? []) : $this->rows('indexing')), 'certificates' => $remote ? ($ca['certificate'] ?? []) : $filter($this->rows('certificate')), 'factors' => $factors, 'chief' => collect($editors)->firstWhere('type', 'chief') ?: ($api['chief'] ?? null), 'view' => $tab] + $this->globals());
     }
     public function articles(string $articles)
     {
@@ -89,8 +118,12 @@ class PublicController extends Controller
         $issue = $this->first('issues', 'id', $articles) ?: ($api['getIssue'] ?? []);
         $rows = $this->rows('article', 'i_id', $articles) ?: ($api['article'] ?? []);
         $rows = array_values(array_filter($rows, fn($r) => !isset($r['status']) || (int) $r['status'] === 1));
-        $volume = !empty($issue['v_id']) ? $this->first('volume', 'id', $issue['v_id']) : ($api['getVol'] ?? []);
-        return view('pages.articles', $this->globals() + compact('issue', 'volume') + ['slug' => $articles, 'articles' => $rows]);
+        $volume = (!empty($issue['v_id']) ? $this->first('volume', 'id', $issue['v_id']) : []) ?: ($api['getVol'] ?? []);
+        $remote = !empty($api['getJournal']);
+        $journal = $remote ? $api['getJournal'] : (!empty($volume['j_id']) ? $this->first('journals', 'j_id', $volume['j_id']) : []);
+        $journalPages = $journal ? app(JournalPages::class)->published($journal, $remote) : null;
+        $slug = $journal['slug'] ?? (string) ($journal['j_id'] ?? $articles);
+        return view('pages.articles', compact('issue', 'volume', 'journal', 'journalPages', 'slug') + ['articles' => $rows] + $this->globals());
     }
     public function policy(string $page)
     {
@@ -98,8 +131,20 @@ class PublicController extends Controller
         abort_unless(isset($pages[$page]), 404);
         return view('pages.policy', $this->globals() + ['title' => $pages[$page][0], 'partial' => $pages[$page][1]]);
     }
-    public function contact()
+    public function contact(Request $request)
     {
-        return view('pages.contact', $this->globals());
+        $key = $request->validate(['journal'=>['nullable','string','max:255']])['journal'] ?? null;
+        $journal = null;
+        $journalPages = null;
+        $slug = null;
+        if ($key) {
+            $api = $this->api('journalDetails/'.rawurlencode($key));
+            $remote = !empty($api['journal']);
+            $journal = $remote ? $api['journal'] : ($this->first('journals', 'slug', $key) ?: (ctype_digit($key) ? $this->first('journals', 'j_id', $key) : []));
+            abort_unless($journal, 404);
+            $journalPages = app(JournalPages::class)->published($journal, $remote);
+            $slug = $journal['slug'] ?? (string) $journal['j_id'];
+        }
+        return view('pages.contact', compact('journal', 'journalPages', 'slug') + $this->globals());
     }
 }

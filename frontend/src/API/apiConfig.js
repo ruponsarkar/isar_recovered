@@ -1,19 +1,18 @@
-
 import axios from 'axios';
-// import AuthUser from './token';
-// 
-// const {token} = AuthUser();
 
 const API = axios.create({
-    // baseURL : "http://127.0.0.1:8000/api/", //local link
-    baseURL : "https://isarpublisher.com/backend/public/api/", //test link
-    // baseURL :  process.env.REACT_APP_MAIN_API, //server link
-   
-    headers :{
-        "Content-Type": "application/json",
-        // "Authorization" : `Bearer ${token}`
-    }
+    baseURL: process.env.REACT_APP_MAIN_API || 'http://127.0.0.1:8000/api/',
+    headers: { 'Content-Type': 'application/json' }
 });
 
+API.interceptors.request.use(config => {
+    try {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        if (typeof token === 'string' && token) config.headers.Authorization = `Bearer ${token}`;
+    } catch (_) {
+        // Invalid or unavailable session storage should not prevent a request.
+    }
+    return config;
+});
 
 export default API;

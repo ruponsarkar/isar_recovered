@@ -1,0 +1,12 @@
+.journal-pages { background: #f5f7fa; min-height: 75vh; color: #243447; }
+.journal-pages h2 { font-size: 1.75rem; font-weight: 600; margin-top: .35rem; }
+.journal-pages-layout { display: grid; grid-template-columns: minmax(240px, 310px) minmax(0, 1fr); gap: 24px; align-items: start; }
+.journal-pages-list, .journal-pages-editor { background: #fff; border: 1px solid #dce2e8; border-radius: 5px; padding: 20px; min-width: 0; }
+.journal-page-choice { width: 100%; text-align: left; background: #fff; color: #243447; border: 0; border-bottom: 1px solid #e4e8ed; border-left: 3px solid transparent; padding: 13px 10px; }
+.journal-page-choice:hover { background: #f4f8fc; }
+.journal-page-choice.selected { border-left-color: #0d6efd; background: #edf4ff; }
+.journal-page-choice:focus-visible { outline: 2px solid #0d6efd; outline-offset: -2px; }
+.journal-page-choice:disabled { opacity: .65; }
+.journal-page-visibility { background: #f6f8fa; border: 1px solid #e1e6eb; padding: 14px; }
+.journal-page-visibility .form-check { display: inline-block; margin-right: 20px; }
+@media (max-width: 900px) { .journal-pages-layout { grid-template-columns: 1fr; } .journal-pages-list ul { max-height: 320px; overflow-y: auto; } }

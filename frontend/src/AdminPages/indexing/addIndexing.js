@@ -37,7 +37,7 @@ const AddIndexingPage = () => {
 
     const [open, setOpen] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => { setLink(''); setImg(undefined); setIsShow(0); setOpen(true); };
     const handleClose = () => setOpen(false);
     const handleCloseEdit = () => setOpen2(false);
     const [load, setLoad] = useState(false);
@@ -66,40 +66,16 @@ const AddIndexingPage = () => {
         console.log(e.target.value);
         setLink(e.target.value);
     }
-    const handleAddIsShow = () => {
-        if (isShow == 1) {
-            setIsShow(0);
-        }
-        else {
-            setIsShow(1);
-
-        }
+    const handleAddIsShow = (event) => {
+        setIsShow(event.target.checked ? 1 : 0);
     }
 
-    const handleEditInput = (e) => {
-        console.log(e.target.value);
-        if (e.target.name == 'isShow') {
-            if (editedIndix.isShow == 1) {
-                setEditedIndex({
-                    ...editedIndix,
-                    isShow: 0
-                });
-            }
-            else {
-                setEditedIndex({
-                    ...editedIndix,
-                    isShow: 1
-                });
-            }
-
-
-        } else {
-
-            setEditedIndex({
-                ...editedIndix,
-                [e.target.name]: e.target.value
-            });
-        }
+    const handleEditInput = (event) => {
+        const { name, value, checked } = event.target;
+        setEditedIndex(previous => ({
+            ...previous,
+            [name === 'isShowOnHome' ? 'isShow' : name]: name === 'isShowOnHome' ? (checked ? 1 : 0) : value,
+        }));
     }
 
     const handleEditImg = (e) => {
@@ -115,6 +91,7 @@ const AddIndexingPage = () => {
 
     const handleEdit = (data) => {
         console.log(data);
+        setEditedImg('');
         setEditedIndex(data);
         setOpen2(true);
 
@@ -219,8 +196,8 @@ const AddIndexingPage = () => {
         const formData = new FormData();
         formData.append('link', editedIndix.link);
         formData.append('img', editedImg);
-        formData.append('j_id', editedIndix.journalId);
-        formData.append('isShow', editedIndix.isShow);
+        formData.append('j_id', journalId);
+        formData.append('isShow', Number(editedIndix.isShow) === 1 ? 1 : 0);
         formData.append('id', editedIndix.id);
 
         axios.post(url, formData)
@@ -228,7 +205,7 @@ const AddIndexingPage = () => {
                 console.log(res);
                 getIndexingById();
                 if (res.status === 200) {
-                    handleClose();
+                    handleCloseEdit();
                     setLink('')
 
 
@@ -313,10 +290,11 @@ const AddIndexingPage = () => {
                                         <br />
                                         <div className="form-check">
                                             <label className="form-check-label">
-                                                <input className="form-check-input" type="checkbox" name="isShow" value="" checked={isShow} onChange={handleAddIsShow}
-                                                    id="flexCheckIndeterminate" />
-                                                Make Public
+                                                <input className="form-check-input" type="checkbox" name="isShowOnHome" value="" checked={isShow === 1} onChange={handleAddIsShow}
+                                                    id="indexing-show-on-home" />
+                                                Show on home
                                             </label>
+                                            <small className="d-block text-muted">Display in the home sidebar. This entry still appears on its journal page when unchecked.</small>
                                         </div>
                                     </div>
 
@@ -366,10 +344,11 @@ const AddIndexingPage = () => {
                                         <br />
                                         <div className="form-check">
                                             <label className="form-check-label">
-                                                <input className="form-check-input" type="checkbox" name="isShow" value="" checked={editedIndix.isShow == 1} onChange={handleEditInput}
-                                                    id="flexCheckIndeterminate" />
-                                                Make Public
+                                                <input className="form-check-input" type="checkbox" name="isShowOnHome" value="" checked={editedIndix.isShow == 1} onChange={handleEditInput}
+                                                    id="edit-indexing-show-on-home" />
+                                                Show on home
                                             </label>
+                                            <small className="d-block text-muted">Display in the home sidebar. This entry still appears on its journal page when unchecked.</small>
                                         </div>
                                     </div>
 
@@ -391,6 +370,21 @@ const AddIndexingPage = () => {
 
 
 
+    const [deletingId, setDeletingId] = useState(null);
+    const handleDelete = async (row) => {
+      if (deletingId !== null || !window.confirm('Delete this Indexing entry?')) return;
+      setDeletingId(row.id);
+      try {
+        const response = await api.deleteIndexing(row.id, journalId);
+        setIndexing(current => current.filter(item => item.id !== row.id));
+        toast.success(response.data.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message || 'Unable to delete this entry. Please try again.');
+      } finally {
+        setDeletingId(null);
+      }
+    };
+
     const viewIndexing = () => {
 
         const columns = [
@@ -404,6 +398,7 @@ const AddIndexingPage = () => {
                 ),
             },
             { field: 'link', headerName: 'Link', width: 300 },
+            { field: 'isShow', headerName: 'Show on home', width: 150, valueFormatter: ({ value }) => Number(value) === 1 ? 'Yes' : 'No' },
             {
                 field: 'id', headerName: 'Edit', width: 300,
                 renderCell: (field) => (
@@ -422,6 +417,16 @@ const AddIndexingPage = () => {
             //         </>
             //     ),
             // },
+
+      {
+        field: 'delete', headerName: 'Delete', width: 120, sortable: false, filterable: false,
+        renderCell: ({ row }) => (
+          <button type="button" className="btn btn-danger btn-sm" disabled={deletingId !== null || !journalId}
+            onClick={(event) => { event.stopPropagation(); handleDelete(row); }}>
+            {deletingId === row.id ? 'Deleting…' : 'Delete'}
+          </button>
+        ),
+      },
         ];
 
         return (

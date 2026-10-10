@@ -129,7 +129,7 @@ const AddCertificatePage = () => {
 
     const api = process.env.REACT_APP_MAIN_API;
     // const api = "http://127.0.0.1:8000/api/";
-    
+
 
     const url = api + "postCertificate";
 
@@ -394,6 +394,21 @@ const AddCertificatePage = () => {
     );
   };
 
+  const [deletingId, setDeletingId] = useState(null);
+  const handleDelete = async (row) => {
+    if (deletingId !== null || !window.confirm('Delete this Certificate entry?')) return;
+    setDeletingId(row.id);
+    try {
+      const response = await api.deleteCertificate(row.id, journalId);
+      setIndexing(current => current.filter(item => item.id !== row.id));
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Unable to delete this entry. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const viewIndexing = () => {
     const columns = [
       {
@@ -436,6 +451,16 @@ const AddCertificatePage = () => {
       //         </>
       //     ),
       // },
+
+      {
+        field: 'delete', headerName: 'Delete', width: 120, sortable: false, filterable: false,
+        renderCell: ({ row }) => (
+          <button type="button" className="btn btn-danger btn-sm" disabled={deletingId !== null || !journalId}
+            onClick={(event) => { event.stopPropagation(); handleDelete(row); }}>
+            {deletingId === row.id ? 'Deleting…' : 'Delete'}
+          </button>
+        ),
+      },
     ];
 
     return (

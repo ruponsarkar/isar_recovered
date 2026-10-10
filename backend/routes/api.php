@@ -3,13 +3,29 @@
 use App\Http\Controllers\articleCntroller;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\journalController;
+use App\Http\Controllers\JournalPageController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
 
+Route::get('contact-details/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'published']);
+Route::middleware('auth:api')->prefix('admin/contact-details')->group(function () {
+    Route::get('/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'index']);
+    Route::put('/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'update']);
+    Route::delete('/{scope}', [\App\Http\Controllers\ContactDetailsController::class, 'destroy']);
+});
+
 Route::post('login', [AuthController::class, 'login']);
+Route::get('journals/{journal}/pages', [JournalPageController::class, 'published']);
+Route::get('journals/{journal}/pages/{page}', [JournalPageController::class, 'show']);
+Route::middleware('auth:api')->prefix('admin/journals/{journal}/pages')->group(function () {
+    Route::get('/', [JournalPageController::class, 'index']);
+    Route::post('/', [JournalPageController::class, 'store']);
+    Route::put('/{page}', [JournalPageController::class, 'update'])->whereNumber('page');
+    Route::delete('/{page}', [JournalPageController::class, 'destroy'])->whereNumber('page');
+});
 Route::middleware('auth:api')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -51,3 +67,11 @@ Route::post('deleteImpactFactor', [journalController::class, 'deleteImpactFactor
 Route::get('downloadArticle/{slug}', [articleCntroller::class, 'download']);
 Route::post('create-order', [PaymentController::class, 'createOrder']);
 Route::post('payment-success', [PaymentController::class, 'paymentSuccess']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('deleteIndexing', [journalController::class, 'deleteIndexing']);
+    Route::post('deleteEditor', [journalController::class, 'deleteEditor']);
+    Route::post('deleteCertificate', [journalController::class, 'deleteCertificate']);
+});
+
+Route::get('articles/{id}/{filename}', [articleCntroller::class, 'download'])->whereNumber('id')->where('filename', '[^/]+\\.pdf')->name('article.pdf');

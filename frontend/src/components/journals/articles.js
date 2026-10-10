@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
+import AuthorText from '../common/AuthorText';
 
 import PersonIcon from "@mui/icons-material/Person";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
@@ -42,17 +43,6 @@ const Articles = () => {
       })
       .catch((err) => {
         console.log(err.response);
-      });
-  };
-
-  const downloadArticle = (id) => {
-    api
-      .downloadArticle(id)
-      .then((res) => {
-        console.log("res==>", res);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   };
 
@@ -117,10 +107,10 @@ const Articles = () => {
                           </a>
                         </div>
                         <div className="col-12">
-                          <PersonIcon fontSize="small" /> {el.aname}
+                          <PersonIcon fontSize="small" /> <AuthorText value={el.aname} />
                         </div>
                         <div className="col-12">
-                          <BookmarksIcon fontSize="small" /> {el.designation}
+                          <BookmarksIcon fontSize="small" /> <AuthorText value={el.designation} />
                         </div>
                         {el.doi && (
                           <>
@@ -152,8 +142,7 @@ const Articles = () => {
                           </button>
                           &nbsp;
                           <a
-                            onClick={() => downloadArticle(el.id)}
-                            href={`${process.env.REACT_APP_BACKEND}assets/articles/${el.file}`}
+                            href={api.downloadArticleUrl(el.id, el.name)}
                             target="_blank"
                             className="btn btn-secondary btn-sm"
                           >

@@ -233,12 +233,27 @@ const Editors = () => {
 
 
 
+    const [deletingId, setDeletingId] = useState(null);
+    const handleDelete = async (row) => {
+        if (deletingId !== null || !window.confirm(`Delete editor ${row.name}?`)) return;
+        setDeletingId(row.id);
+        try {
+            const response = await api.deleteEditor(row.id, row.j_id);
+            setEditors(current => current.filter(editor => editor.id !== row.id));
+            toast.success(response.data.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Unable to delete editor. Please try again.');
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
     const viewEditors = () => {
 
         const columns = [
             { field: 'name', headerName: 'Name', width: 200 },
             { field: 'details', headerName: 'Details', width: 250 },
-            { field: 'type', headerName: 'Type', width: 100 },
+            { field: 'type', headerName: 'Type', width: 180, valueFormatter: ({ value }) => value === 'deputy_chief' ? 'Deputy Chief Editor' : value },
             {
                 field: 'image', headerName: 'photo', width: 150,
                 renderCell: (field) => (
@@ -266,6 +281,15 @@ const Editors = () => {
                 ),
             },
 
+            {
+                field: 'delete', headerName: 'Delete', width: 120, sortable: false, filterable: false,
+                renderCell: ({ row }) => (
+                    <button type="button" className="btn btn-danger btn-sm" disabled={deletingId !== null}
+                        onClick={event => { event.stopPropagation(); handleDelete(row); }}>
+                        {deletingId === row.id ? 'Deleting…' : 'Delete'}
+                    </button>
+                ),
+            },
         ];
 
         return (

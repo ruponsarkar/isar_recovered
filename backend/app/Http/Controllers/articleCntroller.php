@@ -39,14 +39,17 @@ class articleCntroller extends Controller
     }
 
     function download($id){
-        $pre_count= DB::table('article')->where('id', $id)->first()->count;
-        $count = DB::table('article')->where('id', $id)->update([
-            'count'=> $pre_count + 1
-        ]);
-        $journal = DB::table('article')->where('id', $id)->first()->file;
-        $path='/assets/articles/'.$journal;
-        return response()->download(public_path($path));
-        
+        $article = DB::table('article')->where('id', $id)->where('status', 1)->first();
+        abort_unless($article, 404);
+        $filename = (string) $article->file;
+        abort_unless($filename !== '' && basename($filename) === $filename && !str_contains($filename, '\\'), 404);
+        $root = realpath(public_path('assets/articles'));
+        $path = realpath(public_path('assets/articles/' . $filename));
+        abort_unless($root && $path && str_starts_with($path, $root . DIRECTORY_SEPARATOR) && is_file($path), 404);
+        DB::table('article')->where('id', $id)->update(['count' => DB::raw('COALESCE(count, 0) + 1')]);
+        $name = (substr(\Illuminate\Support\Str::slug(strip_tags((string) $article->name)), 0, 150) ?: 'article') . '.pdf';
+        return response()->download($path, $name, ['Content-Type' => 'application/pdf'], (request()->boolean('inline') || request()->routeIs('article.pdf')) ? 'inline' : 'attachment');
+
     }
 
 

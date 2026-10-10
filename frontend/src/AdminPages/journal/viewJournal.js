@@ -48,10 +48,11 @@ const ViewJournal = () => {
         },
 
         {
-            field: 'j_id', headerName: 'Action', width: 500,
+            field: 'j_id', headerName: 'Action', width: 700,
             renderCell: (field) => (
                 <>
                     
+                    <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/admin/journal-pages/${field.row.slug}`)}>Pages &amp; navigation</button>
                     <button  onClick={()=> navigate(`/admin/addjournal/${field.row.slug}`)} className='btn btn-warning btn-sm'>Edit</button>
                     &nbsp;
                     <button className='btn btn-success btn-sm' onClick={() => navigate(`/admin/editors/${field.row.slug}`)}>+ Editors</button>

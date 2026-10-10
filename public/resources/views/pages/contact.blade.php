@@ -1,1 +1,12 @@
-@extends('layouts.app') @section('content')<div class="container py-4"><article class="paper-card"><div class="policy-hero"><h1>Contact Us</h1></div><div class="paper-body policy-copy"><p><b>International Scientific and Academic Research Publisher</b></p><p>H.No. 61, Ward No. 4, Bokakhat, Golaghat, Assam, India, 785612</p><p><a href="mailto:contact@isarpublisher.com">contact@isarpublisher.com</a></p><p><a href="tel:+918638994354">+91 8638994354</a></p></div></article></div>@endsection
+@extends('layouts.app')
+@section('content')
+<div class="container py-4">
+    <article class="paper-card">
+        <div class="policy-hero"><h1>Contact Us</h1></div>
+        <div class="paper-body policy-copy">
+            <p><b>{{ data_get($journal ?? null, 'j_name') ?: 'International Scientific and Academic Research Publisher' }}</b></p>
+            @include('partials.contact-details')
+        </div>
+    </article>
+</div>
+@endsection

@@ -1,0 +1,14 @@
+.read-article-layout { margin-top: 1rem; margin-bottom: 2rem; }
+.read-article-main,.read-article-aside { border: 1px solid #dee2e6; padding: 1rem; background: #fff; }
+.read-article-title { font-size: 1.5rem; line-height: 1.4; text-align: center; color: #212529; }
+.read-article-field { margin-bottom: .65rem; overflow-wrap: anywhere; }
+.read-article-affiliations { display: block; margin-top: .4rem; }
+.read-article-abstract { overflow-wrap: anywhere; line-height: 1.65; }
+.read-article-abstract img { max-width: 100%; height: auto; }
+.read-article-abstract table { max-width: 100%; }
+.read-article-cover { display: block; width: 80%; max-width: 300px; height: auto; margin: 1rem auto; }
+.read-article-aside dl { line-height: 1.6; }
+.read-article-aside dt { display: inline; font-weight: 400; }
+.read-article-aside dd { display: inline; font-weight: 600; margin: 0; }
+.read-article-aside dd::after { content: ''; display: block; margin-bottom: .35rem; }
+@media(max-width:767px) { .read-article-title { font-size: 1.25rem; } .read-article-aside { border-top: 0; } }

@@ -1,0 +1,4 @@
+<p><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span style="white-space: pre-line"><?php echo e($contactDetails['address']); ?></span></p>
+<p><i class="fa-solid fa-envelope" aria-hidden="true"></i> <a class="d-inline" href="mailto:<?php echo e($contactDetails['email']); ?>"><?php echo e($contactDetails['email']); ?></a></p>
+<p><i class="fa-solid fa-phone" aria-hidden="true"></i> <a class="d-inline" href="tel:<?php echo e(preg_replace('/[^+0-9]/', '', $contactDetails['phone'])); ?>"><?php echo e($contactDetails['phone']); ?></a></p>
+<?php /**PATH /Users/ruponsarkar/Documents/projects/isar/isar/public/resources/views/partials/contact-details.blade.php ENDPATH**/ ?>
