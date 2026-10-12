@@ -52,7 +52,7 @@ class ReadArticleController extends Controller
         abort_unless($article, 404);
         $filename = (string) ($article->file ?? '');
         abort_unless($filename !== '' && basename($filename) === $filename && !str_contains($filename, '\\') && strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'pdf', 404);
-        foreach ([public_path('assets/articles'), base_path('../backend/public/assets/articles')] as $directory) {
+        foreach ([public_path('assets/articles'), rtrim(config('app.backend_asset_path'), '/').'/articles'] as $directory) {
             $root = realpath($directory);
             $path = realpath($directory.'/'.$filename);
             if ($root && $path && str_starts_with($path, $root.DIRECTORY_SEPARATOR) && is_file($path)) {

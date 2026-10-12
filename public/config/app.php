@@ -59,6 +59,9 @@ return [
     'asset_url' => env('ASSET_URL'),
 
     // Full public URL of backend/public/assets; supports Laravel config caching.
+    // Filesystem directory shared with the backend application (not a URL).
+    'backend_asset_path' => env('BACKEND_ASSET_PATH') ?: '/backend/public/assets',
+
     'backend_asset_url' => env('BACKEND_ASSET_URL') ?: (env('ASSET_BASE_URL')
         ? rtrim(env('ASSET_BASE_URL'), '/').'/assets' : null),
 

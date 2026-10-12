@@ -6,6 +6,7 @@
     'debug' => true,
     'url' => 'http://127.0.0.1:8001',
     'asset_url' => NULL,
+    'backend_asset_path' => '/Users/ruponsarkar/Documents/projects/isar/isar/public/../backend/public/assets',
     'backend_asset_url' => 'https://darksalmon-ram-817928.hostingersite.com/backend/public/assets',
     'timezone' => 'UTC',
     'locale' => 'en',

@@ -50,7 +50,7 @@ class ApplicationController extends Controller
             if (!$request->hasFile($field)) continue;
             $upload = $request->file($field);
                 $subfolder = $type === 'manuscript' ? '' : '/'.($field === 'file' ? 'cv' : 'photo');
-                $directory = public_path('assets/'.$assetFolders[$type].$subfolder);
+                $directory = rtrim(config('app.backend_asset_path'), '/').'/'.$assetFolders[$type].$subfolder;
                 File::ensureDirectoryExists($directory);
                 $originalName = pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME);
                 $filename = Str::uuid().'-'.(Str::slug($originalName) ?: $field).'.'.$upload->extension();

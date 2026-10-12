@@ -20,7 +20,8 @@ class ApplicationSubmissionTest extends TestCase
     {
         parent::setUp();
         $this->uploadRoot = sys_get_temp_dir().'/isar-submission-test-'.Str::uuid();
-        $this->app->instance('path.public', $this->uploadRoot);
+        $this->app->instance('path.public', $this->uploadRoot.'/public');
+        config(['app.backend_asset_path' => $this->uploadRoot.'/backend/assets']);
         config(['services.public_api.base_url'=>'']);
         Schema::create('journals', function (Blueprint $table) {
             $table->increments('j_id'); $table->string('slug'); $table->string('j_name'); $table->integer('active'); $table->integer('sl_no');
@@ -48,6 +49,7 @@ class ApplicationSubmissionTest extends TestCase
 
     protected function tearDown(): void
     {
+        $this->assertDirectoryDoesNotExist($this->uploadRoot.'/public/assets');
         File::deleteDirectory($this->uploadRoot);
         parent::tearDown();
     }
@@ -80,7 +82,7 @@ class ApplicationSubmissionTest extends TestCase
             ->assertOk()->assertSee('value="isarjahss" selected', false)->assertDontSee('value="science" selected', false);
     }
 
-    public function test_manuscript_is_saved_with_legacy_columns_and_public_upload(): void
+    public function test_manuscript_is_saved_with_legacy_columns_and_backend_upload(): void
     {
         $this->post('/manuscript', $this->payer() + [
             'mode'=>'Normal Process', 'article_type'=>'Research article', 'journal'=>'isarjahss',
@@ -88,7 +90,7 @@ class ApplicationSubmissionTest extends TestCase
         ])->assertRedirect('/manuscript')->assertSessionHas('success');
         $this->assertDatabaseHas('manuscript', ['author'=>'Test Author', 'mobile'=>'1234567890',
             'type'=>'Research article', 'manuscript'=>'Test Research', 'journal'=>'Arts Journal']);
-        $this->assertCount(1, File::files($this->uploadRoot.'/assets/manuscript'));
+        $this->assertCount(1, File::files($this->uploadRoot.'/backend/assets/manuscript'));
     }
 
     public function test_all_join_forms_save_into_the_original_request_tables(): void
@@ -102,8 +104,8 @@ class ApplicationSubmissionTest extends TestCase
             ])->assertRedirect()->assertSessionHas('success');
             $this->assertDatabaseHas($table, ['name'=>'Test Author', 'mobile'=>'1234567890',
                 'specialization'=>'Science', 'publication'=>'Two papers']);
-            $this->assertCount(1, File::files($this->uploadRoot.'/assets/'.$folder.'/cv'));
-            $this->assertCount(1, File::files($this->uploadRoot.'/assets/'.$folder.'/photo'));
+            $this->assertCount(1, File::files($this->uploadRoot.'/backend/assets/'.$folder.'/cv'));
+            $this->assertCount(1, File::files($this->uploadRoot.'/backend/assets/'.$folder.'/photo'));
         }
     }
 
@@ -114,6 +116,6 @@ class ApplicationSubmissionTest extends TestCase
             'mode'=>'Normal Process', 'article_type'=>'Research article', 'journal'=>'isarjahss',
             'title'=>'Test Research', 'file'=>UploadedFile::fake()->create('paper.pdf', 10, 'application/pdf'),
         ])->assertRedirect('/manuscript')->assertSessionHasErrors('submission')->assertSessionMissing('success');
-        $this->assertCount(0, File::files($this->uploadRoot.'/assets/manuscript'));
+        $this->assertCount(0, File::files($this->uploadRoot.'/backend/assets/manuscript'));
     }
 }
