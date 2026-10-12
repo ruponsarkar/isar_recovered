@@ -28,7 +28,7 @@
     }
     $canonical = \App\Services\Seo::url($canonicalPath);
     $noindex = str_starts_with($routeName, 'payment') || str_starts_with($routeName, 'pay.') || in_array($routeName, ['manuscript', 'join.author', 'join.reviewer', 'join.editor'], true) || in_array(request()->getPathInfo(), ['/joinReviewer', '/joinEditor'], true);
-    $image = !empty($journalData['photo']) ? asset_url('journal/'.$journalData['photo']) : null;
+    $image = !empty($journalData['photo']) ? backend_asset_url('journal/'.$journalData['photo']) : null;
     $siteSchema = ['@context' => 'https://schema.org', '@type' => 'Organization', 'name' => 'ISAR Publisher', 'url' => \App\Services\Seo::url('/')];
     if (in_array($routeName, ['journal', 'journal.page'], true)) $siteSchema = ['@context'=>'https://schema.org', '@type'=>'Periodical', 'name'=>$journalData['j_name'] ?? 'Journal', 'url'=>\App\Services\Seo::url('/journal/'.rawurlencode($journalData['slug'] ?? $slug)), 'publisher'=>['@type'=>'Organization','name'=>'ISAR Publisher']] + (!empty($journalData['issn']) ? ['issn'=>$journalData['issn']] : []);
 ?>

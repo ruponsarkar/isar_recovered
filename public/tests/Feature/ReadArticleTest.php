@@ -73,16 +73,35 @@ class ReadArticleTest extends TestCase
     public function test_home_and_article_list_link_to_local_detail_with_affiliations_on_next_line(): void
     {
         $this->mock(PublicSidebarData::class, function ($mock) { $mock->shouldReceive('get')->andReturn(['journals'=>[],'editors'=>[],'indexings'=>[]]); });
-        $this->get('/')->assertOk()->assertSee('article-meta flex-column align-items-start', false)->assertSee('article-affiliations w-100', false)->assertSee('/viewArticle/research-paper', false)->assertSee('/viewArticle/research-paper/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('/Articles/research-paper', false);
-        $this->get('/Articles/7')->assertOk()->assertSee('/viewArticle/research-paper', false)->assertSee('/viewArticle/research-paper/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('article.isarpublisher.com', false);
+        $this->get('/')->assertOk()->assertSee('article-meta flex-column align-items-start', false)->assertSee('article-affiliations w-100', false)->assertSee('/viewArticle/research-paper', false)->assertSee('/pdf/research-paper/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('/Articles/research-paper', false);
+        $this->get('/Articles/7')->assertOk()->assertSee('/viewArticle/research-paper', false)->assertSee('/pdf/research-paper/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('article.isarpublisher.com', false);
     }
 
-    public function test_backend_assets_use_configured_url_for_images_and_pdf_redirects(): void
+    public function test_backend_assets_use_configured_url_and_proxy_pdf_inline(): void
     {
         config(['app.backend_asset_url' => 'https://cdn.example.org/backend/assets/']);
         $this->assertSame('https://cdn.example.org/backend/assets/journal/cover.jpg', backend_asset_url('/journal/cover.jpg'));
         $this->assertStringContainsString('https://cdn.example.org/backend/assets/mainlogo.png', view('partials.nav')->render());
-        $this->get('/download/6')->assertRedirect('https://cdn.example.org/backend/assets/articles/test-paper.pdf');
+        Http::swap(new \Illuminate\Http\Client\Factory());
+        Http::fake(['https://cdn.example.org/backend/assets/articles/test-paper.pdf' => Http::response('%PDF-1.4 test', 200, ['Content-Type' => 'application/pdf'])]);
+        $response = $this->get('/pdf/research-paper/real-article-title.pdf')
+            ->assertOk()->assertHeader('Content-Type', 'application/pdf')
+            ->assertHeader('Content-Disposition', 'inline; filename=real-article-title.pdf');
+        $this->assertFalse($response->headers->has('Location'));
+        $this->assertSame('%PDF-1.4 test', $response->streamedContent());
+        Http::assertSent(fn ($request) => $request->url() === 'https://cdn.example.org/backend/assets/articles/test-paper.pdf');
+    }
+
+    public function test_remote_pdf_failures_do_not_redirect_to_backend(): void
+    {
+        config(['app.backend_asset_url' => 'https://cdn.example.org/assets']);
+        foreach ([404 => 404, 500 => 502, 302 => 502] as $upstream => $expected) {
+            Http::swap(new \Illuminate\Http\Client\Factory());
+            Http::fake(['*' => Http::response('', $upstream)]);
+            $this->get('/pdf/research-paper/real-article-title.pdf')->assertStatus($expected);
+        }
+        DB::table('article')->where('id', 6)->update(['status' => 0]);
+        $this->get('/pdf/research-paper/real-article-title.pdf')->assertNotFound();
     }
 
     public function test_local_download_increments_only_when_valid_file_exists(): void

@@ -50,3 +50,5 @@ Route::post('/pay', [PaymentController::class, 'razorpaySuccess'])->name('pay');
 Route::get('/articles/{id}/{filename}', [ReadArticleController::class, 'pdf'])->whereNumber('id')->where('filename', '[^/]+\\.pdf')->name('article.pdf');
 
 Route::get('/viewArticle/{slug}/{filename}', [ReadArticleController::class, 'fulltext'])->where('filename', '[^/]+\\.pdf')->name('article.named-pdf');
+
+Route::get('/pdf/{slug}/{filename}', [ReadArticleController::class, 'fulltext'])->where('filename', '[^/]+\\.pdf')->name('article.public-pdf');

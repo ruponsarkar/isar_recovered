@@ -1,0 +1,10 @@
+<?php $__env->startSection('content'); ?>
+<link href="<?php echo e(asset('payment.css')); ?>" rel="stylesheet">
+<div class="container py-5"><div class="row g-3">
+<aside class="col-lg-3 d-none d-lg-block"><?php echo $__env->make('pages.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?></aside>
+<section class="col-lg-9"><article class="payment-result <?php echo e($successful ? 'is-success' : 'is-failure'); ?>"><div class="result-icon"><i class="fa-solid <?php echo e($successful ? 'fa-check' : 'fa-xmark'); ?>"></i></div><h1><?php echo e($successful ? 'Payment successful' : 'Payment not confirmed'); ?></h1><?php if($successful): ?><p>Thank you. Your secure payment has been verified and recorded.</p><dl><div><dt>Transaction reference</dt><dd><?php echo e($payment->reference); ?></dd></div><div><dt>Amount</dt><dd><?php echo e($payment->currency); ?> <?php echo e(number_format($payment->total_minor/100,2)); ?></dd></div><div><dt>Provider</dt><dd><?php echo e(ucfirst($payment->provider)); ?></dd></div></dl><?php else: ?><p>We could not verify this transaction. No successful payment has been recorded. If money was deducted, contact the editorial office with the reference below.</p><code><?php echo e($reference ?? 'Reference unavailable'); ?></code><?php endif; ?><div class="mt-4"><a class="btn btn-isar" href="<?php echo e(route('payment')); ?>">Return to payments</a> <a class="btn btn-outline-secondary" href="mailto:contact@isarpublisher.com">Contact support</a></div></article></section>
+<aside class="col-12 d-lg-none"><?php echo $__env->make('pages.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?></aside>
+</div></div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ruponsarkar/Documents/projects/isar/isar/public/resources/views/pages/payment-result.blade.php ENDPATH**/ ?>

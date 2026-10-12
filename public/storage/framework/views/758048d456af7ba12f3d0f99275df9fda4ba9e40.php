@@ -44,7 +44,7 @@
                                         <?php $__currentLoopData = $hero; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $j): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <a class="journal-hero-cover"
                                                 href="<?php echo e(count($journals) ? route('journal', $j['slug'] ?? ($j['j_id'] ?? 'journal')) : route('journals')); ?>"><img
-                                                    src="<?php echo e(asset_url('journal/' . ($j['photo'] ?? $j['cover']))); ?>"
+                                                    src="<?php echo e(backend_asset_url('journal/' . ($j['photo'] ?? $j['cover']))); ?>"
                                                     alt="<?php echo e($j['j_name'] ?? $j['name']); ?>"><span><?php echo e($j['j_name'] ?? $j['name']); ?></span></a>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
@@ -114,7 +114,7 @@
                                             class="fa-regular fa-file-lines"></i> Abstract</button>
                                     <?php if(!empty($article['file']) && isset($article['id']) && ctype_digit((string) $article['id'])): ?>
                                         <a class="btn btn-outline-secondary btn-sm"
-                                            href="<?php echo e(\App\Services\Seo::url(\App\Services\Seo::pdfPath($article))); ?>"><i
+                                            href="<?php echo e(\App\Services\Seo::pdfPath($article)); ?>"><i
                                                 class="fa-solid fa-file-pdf"></i> PDF</a>
                                     <?php endif; ?>
                                     <a class="btn btn-isar btn-sm"

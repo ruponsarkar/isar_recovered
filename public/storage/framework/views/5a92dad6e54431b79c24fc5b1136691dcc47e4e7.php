@@ -4,7 +4,7 @@
             href="https://www.facebook.com/profile.php?id=61552592232822"><i class="fa-brands fa-facebook"></i></a><a
             aria-label="Instagram" href="https://www.instagram.com/isarpublisher/"><i
                 class="fa-brands fa-instagram"></i></a></div>
-    <div class="masthead"><a href="<?php echo e(route('home')); ?>" aria-label="ISAR Publisher home"><img src="<?php echo e(asset('assets/mainlogo.png')); ?>" alt="ISAR Publisher"></a>
+    <div class="masthead"><a href="<?php echo e(route('home')); ?>" aria-label="ISAR Publisher home"><img src="<?php echo e(backend_asset_url('mainlogo.png')); ?>" alt="ISAR Publisher"></a>
         <h1>International Scientific and Academic Research Publisher</h1>
     </div>
     <?php if(isset($journalPages)): ?>

@@ -13,7 +13,7 @@ class Seo
     {
         $filename = (substr(\Illuminate\Support\Str::slug(strip_tags((string) data_get($article, 'name'))), 0, 150) ?: 'article').'.pdf';
         $slug = data_get($article, 'slug');
-        return $slug ? '/viewArticle/'.rawurlencode($slug).'/'.$filename
+        return $slug ? '/pdf/'.rawurlencode($slug).'/'.$filename
             : '/articles/'.data_get($article, 'id').'/'.$filename;
     }
 

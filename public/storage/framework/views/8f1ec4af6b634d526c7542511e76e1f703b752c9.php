@@ -1,4 +1,4 @@
-<?php if (! $__env->hasRenderedOnce('98659f1c-df43-45f1-99ae-8fbbbdc3837d')): $__env->markAsRenderedOnce('98659f1c-df43-45f1-99ae-8fbbbdc3837d'); ?>
+<?php if (! $__env->hasRenderedOnce('78bce2e9-a466-4e31-8e3c-4aabb09d920f')): $__env->markAsRenderedOnce('78bce2e9-a466-4e31-8e3c-4aabb09d920f'); ?>
     <link href="<?php echo e(asset('top-editors.css')); ?>" rel="stylesheet">
 <?php endif; ?>
 <div class="side-card">
@@ -25,7 +25,7 @@
                         <div class="top-editors-grid">
                             <?php $__currentLoopData = $slide; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $editor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <figure class="top-editor"><img
-                                        src="<?php echo e(asset_url('editors/' . ($editor['image'] ?? ''))); ?>"
+                                        src="<?php echo e(backend_asset_url('editors/' . ($editor['image'] ?? ''))); ?>"
                                         alt="<?php echo e($editor['name'] ?? 'ISAR editor'); ?>">
                                     <figcaption><?php echo e($editor['name'] ?? 'Editorial member'); ?></figcaption>
                                 </figure>
@@ -41,7 +41,7 @@
             <div class="p-2 d-flex flex-wrap gap-2 justify-content-center">
                 <?php $__currentLoopData = array_values($indexings); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $indexing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <?php ($indexingImage = $indexing['img'] ?? ($indexing['image'] ?? ($indexing['photo'] ?? ($indexing['logo'] ?? null)))); ?><?php if($indexingImage): ?>
-                        <a href="<?php echo e($indexing['link'] ?? '#'); ?>" target="_blank" rel="noopener"><img src="<?php echo e(asset_url('indexing/' . $indexingImage)); ?>"
+                        <a href="<?php echo e($indexing['link'] ?? '#'); ?>" target="_blank" rel="noopener"><img src="<?php echo e(backend_asset_url('indexing/' . $indexingImage)); ?>"
                             alt="<?php echo e($indexing['name'] ?? 'Indexing service'); ?>"
                         style="max-width:72px;max-height:48px;object-fit:contain"></a><?php else: ?><span
                             class="badge text-bg-light"><?php echo e($indexing['name'] ?? 'Indexed'); ?></span>

@@ -115,7 +115,7 @@
                                             class="fa-regular fa-file-lines"></i> Abstract</button>
                                     @if (!empty($article['file']) && isset($article['id']) && ctype_digit((string) $article['id']))
                                         <a class="btn btn-outline-secondary btn-sm"
-                                            href="{{ \App\Services\Seo::url(\App\Services\Seo::pdfPath($article)) }}"><i
+                                            href="{{ \App\Services\Seo::pdfPath($article) }}"><i
                                                 class="fa-solid fa-file-pdf"></i> PDF</a>
                                     @endif
                                     <a class="btn btn-isar btn-sm"

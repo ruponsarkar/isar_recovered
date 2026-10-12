@@ -21,7 +21,7 @@
                             class="fa-solid fa-file-lines"></i> Abstract</button>
                     @if (!empty($article['file']) && isset($article['id']) && ctype_digit((string) $article['id']))
                         <a class="btn btn-secondary btn-sm"
-                            href="{{ \App\Services\Seo::url(\App\Services\Seo::pdfPath($article)) }}"
+                            href="{{ \App\Services\Seo::pdfPath($article) }}"
                         target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> PDF</a>@else<span
                             class="btn btn-secondary btn-sm disabled" aria-disabled="true">PDF unavailable</span>
                     @endif

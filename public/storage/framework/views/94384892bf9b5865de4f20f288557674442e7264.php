@@ -1,7 +1,7 @@
 <footer class="footer mt-4">
     <div class="container py-4">
         <div class="row g-4">
-            <div class="col-lg-4"><img src="<?php echo e(asset('assets/mainlogo.png')); ?>" class="footer-logo" alt="ISAR">
+            <div class="col-lg-4"><img src="<?php echo e(backend_asset_url('mainlogo.png')); ?>" class="footer-logo" alt="ISAR">
                 <p>International Scientific and Academic Research Publisher</p>
                 <div class="footer-social"><a href="https://www.facebook.com/profile.php?id=61552592232822"><i
                             class="fa-brands fa-facebook"></i></a><a href="https://twitter.com/ISARPublisher"><i

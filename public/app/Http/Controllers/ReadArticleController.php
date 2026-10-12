@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Schema;
 use App\Services\Seo;
 use App\Services\JournalPages;
@@ -63,6 +65,37 @@ class ReadArticleController extends Controller
         // This base is administrator-configured, never supplied by the visitor.
         $base = rtrim((string) config('app.backend_asset_url'), '/');
         abort_unless(filter_var($base, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($base, PHP_URL_SCHEME) ?? ''), ['http', 'https']), 404);
-        return redirect()->away($base.'/articles/'.rawurlencode($filename));
+        try {
+            $upstream = Http::connectTimeout(10)->timeout(60)
+                ->withOptions(['stream' => true, 'allow_redirects' => false])
+                ->get($base.'/articles/'.rawurlencode($filename));
+        } catch (ConnectionException $exception) {
+            abort(502, 'PDF temporarily unavailable.');
+        }
+        if (!$upstream->ok()) {
+            $status = $upstream->status();
+            $upstream->toPsrResponse()->getBody()->close();
+            abort($status === 404 ? 404 : 502);
+        }
+
+        $stream = $upstream->toPsrResponse()->getBody();
+        if ($countDownload) DB::table('article')->where('id', $article->id)->where('status', 1)->update(['count' => DB::raw('COALESCE(count, 0) + 1')]);
+        $downloadName = (substr(\Illuminate\Support\Str::slug(strip_tags((string) $article->name)), 0, 150) ?: 'article').'.pdf';
+        $disposition = $countDownload && !request()->boolean('inline') && !request()->routeIs('article.pdf') ? 'attachment' : 'inline';
+
+        return response()->stream(function () use ($stream) {
+            try {
+                while (!$stream->eof()) {
+                    echo $stream->read(65536);
+                }
+            } finally {
+                $stream->close();
+            }
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => $disposition.'; filename='.$downloadName,
+            'X-Content-Type-Options' => 'nosniff',
+            'Link' => '<'.Seo::url('/viewArticle/'.rawurlencode($article->slug)).'>; rel="canonical"',
+        ]);
     }
 }
