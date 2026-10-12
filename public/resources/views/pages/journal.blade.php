@@ -82,7 +82,7 @@
                                         <article class="editor-card">
                                             <div class="row">
                                                 <div class="col-md-3"><img
-                                                        src="{{ asset_url('editors/' . ($editor['image'] ?? '')) }}"
+                                                        src="{{ backend_asset_url('editors/' . ($editor['image'] ?? '')) }}"
                                                         alt="{{ $editor['name'] ?? 'Editor' }}"></div>
                                                 <div class="col-md-9"><strong>{{ $editor['name'] ?? '' }}</strong>
                                                     <div>{{ ['chief' => 'Editor-in-Chief', 'deputy_chief' => 'Deputy Chief Editor', 'ass' => 'Editor'][$type] }}</div>
@@ -115,7 +115,7 @@
             <aside class="col-lg-3">
                 <div class="paper-card journal-cover-card">
                     <div class="paper-body">
-                        <img class="journal-cover" src="{{ asset_url('journal/' . ($journal['photo'] ?? '')) }}"
+                        <img class="journal-cover" src="{{ backend_asset_url('journal/' . ($journal['photo'] ?? '')) }}"
                             alt="{{ $journal['j_name'] ?? 'Journal' }} cover">
                     </div>
                 </div>

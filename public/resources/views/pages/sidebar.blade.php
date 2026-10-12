@@ -25,7 +25,7 @@
                         <div class="top-editors-grid">
                             @foreach ($slide as $editor)
                                 <figure class="top-editor"><img
-                                        src="{{ asset_url('editors/' . ($editor['image'] ?? '')) }}"
+                                        src="{{ backend_asset_url('editors/' . ($editor['image'] ?? '')) }}"
                                         alt="{{ $editor['name'] ?? 'ISAR editor' }}">
                                     <figcaption>{{ $editor['name'] ?? 'Editorial member' }}</figcaption>
                                 </figure>
@@ -41,7 +41,7 @@
             <div class="p-2 d-flex flex-wrap gap-2 justify-content-center">
                 @foreach (array_values($indexings) as $indexing)
                     @php($indexingImage = $indexing['img'] ?? ($indexing['image'] ?? ($indexing['photo'] ?? ($indexing['logo'] ?? null))))@if ($indexingImage)
-                        <a href="{{ $indexing['link'] ?? '#' }}" target="_blank" rel="noopener"><img src="{{ asset_url('indexing/' . $indexingImage) }}"
+                        <a href="{{ $indexing['link'] ?? '#' }}" target="_blank" rel="noopener"><img src="{{ backend_asset_url('indexing/' . $indexingImage) }}"
                             alt="{{ $indexing['name'] ?? 'Indexing service' }}"
                         style="max-width:72px;max-height:48px;object-fit:contain"></a>@else<span
                             class="badge text-bg-light">{{ $indexing['name'] ?? 'Indexed' }}</span>

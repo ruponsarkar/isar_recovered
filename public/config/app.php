@@ -58,6 +58,10 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+    // Full public URL of backend/public/assets; supports Laravel config caching.
+    'backend_asset_url' => env('BACKEND_ASSET_URL') ?: (env('ASSET_BASE_URL')
+        ? rtrim(env('ASSET_BASE_URL'), '/').'/assets' : null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

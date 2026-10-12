@@ -9,7 +9,7 @@
                             <div class="border h-100 p-2">
                                 <div class="row h-100">
                                     <div class="col-5 d-flex align-items-center"><img class="journal-cover"
-                                            src="{{ asset_url('journal/' . ($j['photo'] ?? 'journals/j1.jpg')) }}"
+                                            src="{{ backend_asset_url('journal/' . ($j['photo'] ?? 'journals/j1.jpg')) }}"
                                             alt="Journal cover"></div>
                                     <div class="col-7">
                                         <div class="journal-name small">{{ $j['j_name'] ?? 'ISAR Journal' }}</div>

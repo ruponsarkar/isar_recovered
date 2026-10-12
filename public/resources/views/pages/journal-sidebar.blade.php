@@ -16,8 +16,8 @@
             <div class="logo-grid">
                 @foreach ($indexings as $i)
                     <a href="{{ $i['link'] ?? '#' }}" target="_blank" rel="noopener"><img
-                            src="{{ asset_url('indexing/' . ($i['img'] ?? '')) }}"
-                            onerror="this.src='{{ asset_url('indexings/' . ($i['img'] ?? '')) }}'"
+                            src="{{ backend_asset_url('indexing/' . ($i['img'] ?? '')) }}"
+                            onerror="this.src='{{ backend_asset_url('indexings/' . ($i['img'] ?? '')) }}'"
                             alt="Indexing service"></a>
                 @endforeach
             </div>
@@ -25,7 +25,7 @@
             <div class="side-card">
                 <div class="section-title">Certificate</div>
                 @foreach ($certificates as $c)
-                    <img class="certificate" src="{{ asset_url('certificate/' . ($c['img'] ?? '')) }}"
+                    <img class="certificate" src="{{ backend_asset_url('certificate/' . ($c['img'] ?? '')) }}"
                         alt="Journal certificate">
                 @endforeach
             </div>

@@ -49,7 +49,7 @@
     if ($article->published_date) $schema['datePublished'] = $article->published_date;
     if ($doi) $schema['identifier'] = ['@type'=>'PropertyValue','propertyID'=>'DOI','value'=>$doi];
     if (!empty($article->file)) $schema['encoding'] = ['@type'=>'MediaObject','encodingFormat'=>'application/pdf','contentUrl'=>$pdfUrl];
-    if (!empty($journal->photo)) $schema['image'] = asset_url('journal/'.$journal->photo);
+    if (!empty($journal->photo)) $schema['image'] = backend_asset_url('journal/'.$journal->photo);
 @endphp
 @if(!empty($pages[0]))<meta name="citation_firstpage" content="{{ $pages[0] }}">@endif
 @if(!empty($pages[1]))<meta name="citation_lastpage" content="{{ $pages[1] }}">@endif
@@ -92,7 +92,7 @@
                 <dt>Frequency: </dt><dd>{{ $journal->frequency ?? '—' }}</dd>
                 <dt>Language: </dt><dd>{{ $journal->language ?? '—' }}</dd>
             </dl>
-            @if(!empty($journal->photo))<hr><img src="{{ asset_url('journal/'.$journal->photo) }}" class="read-article-cover" alt="{{ $journal->j_name }} cover">@endif
+            @if(!empty($journal->photo))<hr><img src="{{ backend_asset_url('journal/'.$journal->photo) }}" class="read-article-cover" alt="{{ $journal->j_name }} cover">@endif
         </aside>
     </div>
 </div>

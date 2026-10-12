@@ -5,4 +5,11 @@ if (!function_exists('author_text')) {
         return new \Illuminate\Support\HtmlString(preg_replace('/&lt;sup&gt;([0-9*\-]+)&lt;\/sup&gt;/', '<sup>$1</sup>', $escaped));
     }
 }
-if (!function_exists('asset_url')) { function asset_url(string $path): string { $base=rtrim((string) env('ASSET_BASE_URL'), '/'); return $base ? $base.'/assets/'.$path : asset('assets/'.$path); } }
+if (!function_exists('backend_asset_url')) {
+    function backend_asset_url(string $path): string {
+        $base = rtrim((string) config('app.backend_asset_url'), '/');
+        $path = ltrim($path, '/');
+
+        return $base !== '' ? $base.'/'.$path : asset('assets/'.$path);
+    }
+}

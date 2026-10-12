@@ -61,8 +61,8 @@ class ReadArticleController extends Controller
             }
         }
         // This base is administrator-configured, never supplied by the visitor.
-        $base = rtrim((string) env('ASSET_BASE_URL'), '/');
+        $base = rtrim((string) config('app.backend_asset_url'), '/');
         abort_unless(filter_var($base, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($base, PHP_URL_SCHEME) ?? ''), ['http', 'https']), 404);
-        return redirect()->away($base.'/assets/articles/'.rawurlencode($filename));
+        return redirect()->away($base.'/articles/'.rawurlencode($filename));
     }
 }

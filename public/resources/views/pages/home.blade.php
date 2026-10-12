@@ -45,7 +45,7 @@
                                         @foreach ($hero as $j)
                                             <a class="journal-hero-cover"
                                                 href="{{ count($journals) ? route('journal', $j['slug'] ?? ($j['j_id'] ?? 'journal')) : route('journals') }}"><img
-                                                    src="{{ asset_url('journal/' . ($j['photo'] ?? $j['cover'])) }}"
+                                                    src="{{ backend_asset_url('journal/' . ($j['photo'] ?? $j['cover'])) }}"
                                                     alt="{{ $j['j_name'] ?? $j['name'] }}"><span>{{ $j['j_name'] ?? $j['name'] }}</span></a>
                                         @endforeach
                                     </div>

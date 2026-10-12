@@ -77,8 +77,17 @@ class ReadArticleTest extends TestCase
         $this->get('/Articles/7')->assertOk()->assertSee('/viewArticle/research-paper', false)->assertSee('/viewArticle/research-paper/real-article-title.pdf', false)->assertDontSee('/assets/articles/test-paper.pdf', false)->assertDontSee('article.isarpublisher.com', false);
     }
 
+    public function test_backend_assets_use_configured_url_for_images_and_pdf_redirects(): void
+    {
+        config(['app.backend_asset_url' => 'https://cdn.example.org/backend/assets/']);
+        $this->assertSame('https://cdn.example.org/backend/assets/journal/cover.jpg', backend_asset_url('/journal/cover.jpg'));
+        $this->assertStringContainsString('https://cdn.example.org/backend/assets/mainlogo.png', view('partials.nav')->render());
+        $this->get('/download/6')->assertRedirect('https://cdn.example.org/backend/assets/articles/test-paper.pdf');
+    }
+
     public function test_local_download_increments_only_when_valid_file_exists(): void
     {
+        config(['app.backend_asset_url' => null]);
         $root = sys_get_temp_dir().'/isar-article-'.bin2hex(random_bytes(8));
         $this->app->instance('path.public',$root);
         try {
