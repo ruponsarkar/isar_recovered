@@ -85,7 +85,8 @@ const PublicInterface = () => {
             <Navup />
 
             <Routes>
-                <Route path="/" element={<Homepage />} />
+                <Route path="/old" element={<Homepage />} />
+                <Route path="/" element={<Login />} />
                 <Route path="/AllJournals" element={<AllJournalsPage />} />
                 <Route path="/journal/:journal" element={<JournalDetailsPage />} />
                 <Route path="/Articles/:Articles" element={<Articles />} />
