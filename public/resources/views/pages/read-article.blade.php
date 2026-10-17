@@ -81,7 +81,7 @@
         </article>
         <aside class="col-md-4 read-article-aside" aria-label="Journal and download details">
             <div class="text-center py-2">
-                @if(!empty($article->file))<a href="{{ route('article.download', $article->id) }}" class="btn btn-success"><i class="fa-solid fa-download"></i> &nbsp; Download</a>@else<span class="text-muted">PDF unavailable</span>@endif
+                @if(!empty($article->file))<a href="{{ route('article.download', ['id' => $article->id]) }}" class="btn btn-success" download><i class="fa-solid fa-download"></i> &nbsp; Download</a>@else<span class="text-muted">PDF unavailable</span>@endif
                 <span class="btn btn-secondary" aria-label="{{ $article->count ?? 0 }} downloads"><i class="fa-solid fa-eye"></i> &nbsp; {{ $article->count ?? 0 }}</span>
             </div>
             <hr>

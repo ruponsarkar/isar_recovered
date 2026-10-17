@@ -101,9 +101,9 @@
                                 <div class="article-title mt-2">{{ $article['name'] ?? $article['title'] }}</div>
                                 <div class="article-meta flex-column align-items-start"><span><i class="fa-regular fa-user"></i>
                                         {{ author_text($article['aname'] ?? ($article['author'] ?? 'ISAR Research Author')) }}</span>
-                                        <span class="article-affiliations w-100"><i
+                                        {{-- <span class="article-affiliations w-100"><i
                                             class="fa-solid fa-bookmark"></i>
-                                        {{ author_text($article['designation'] ?? 'Peer-reviewed publication') }}</span>
+                                        {{ author_text($article['designation'] ?? 'Peer-reviewed publication') }}</span> --}}
                                 </div>
                                 @if (!empty($article['doi']) && $article['doi'] !== 'null')
                                     <div class="article-doi">DOI: <a
