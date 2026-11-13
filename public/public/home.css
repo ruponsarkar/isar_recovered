@@ -82,6 +82,7 @@ body.home-page {
 }
 .home-page .article-title { color: var(--ink); line-height: 1.5; }
 .home-page .article-meta { gap: 6px; color: var(--home-muted); line-height: 1.6; }
+.home-page .article-affiliations { display: block; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .home-page .article-count { color: var(--home-muted); }
 .home-page .article-meta i { color: #397c7d; margin-right: 4px; }
 .home-page .article-meta span,

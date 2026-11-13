@@ -104,9 +104,10 @@
                                             class="fa-solid fa-bookmark"></i>
                                         <?php echo e(author_text($article['designation'] ?? 'Peer-reviewed publication')); ?></span>
                                 </div>
-                                <?php if(!empty($article['doi']) && $article['doi'] !== 'null'): ?>
+                                <?php ($articleDoi = \App\Services\Seo::doi($article['doi'] ?? '')); ?>
+                                <?php if($articleDoi !== ''): ?>
                                     <div class="article-doi">DOI: <a
-                                            href="<?php echo e($article['doi']); ?>"><?php echo e($article['doi']); ?></a></div>
+                                            href="https://doi.org/<?php echo e($articleDoi); ?>"><?php echo e($articleDoi); ?></a></div>
                                 <?php endif; ?>
                                 <div class="article-actions">
                                     <button class="btn btn-outline-secondary btn-sm" type="button"

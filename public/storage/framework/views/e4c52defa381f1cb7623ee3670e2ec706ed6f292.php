@@ -31,13 +31,10 @@
                         </fieldset>
                         <div id="paypal-option" class="gateway-box">
                             <form method="post" action="<?php echo e(route('payment.details')); ?>"><?php echo csrf_field(); ?><label class="form-label"
-                                    for="fee">Select processing fee</label><select class="form-select" id="fee"
-                                    name="fee" required>
-                                    <option value="">— Select fee —</option>
-                                    <?php $__currentLoopData = $paypalFees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($fee); ?>">$<?php echo e($fee); ?> USD</option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
+                                    for="fee">Enter processing fee (USD)</label>
+                                <input class="form-control" type="number" id="fee" name="fee"
+                                    min="1" max="1000000" step="0.01" value="<?php echo e(old('fee')); ?>" required>
+                                <div class="form-text">A fixed 10% tax will be added on the next page.</div>
                                 <button class="btn paypal-button w-100 mt-3" type="submit" <?php if(!$paypalConfigured): echo 'disabled'; endif; ?>><i
                                         class="fa-brands fa-paypal"></i> Pay Now With PayPal</button>
                             </form>

@@ -16,22 +16,22 @@ use Throwable;
 
 class PaymentController extends Controller
 {
-    public const PAYPAL_FEES = [20, 30, 50, 75, 100, 150, 200];
+    public const PAYPAL_TAX_RATE = 0.10;
 
     public function __construct(private RazorpayGateway $razorpay, private PayPalGateway $paypal, private PublicSidebarData $sidebar) {}
 
     public function index()
     {
-        return view('pages.payment', $this->sidebar->get() + ['paypalFees' => self::PAYPAL_FEES,
+        return view('pages.payment', $this->sidebar->get() + [
             'paypalConfigured' => $this->paypal->configured(), 'razorpayConfigured' => $this->razorpay->configured(),
         ]);
     }
 
     public function details(Request $request)
     {
-        $data = $request->validate(['fee' => ['required', 'integer', Rule::in(self::PAYPAL_FEES)]]);
+        $data = $request->validate(['fee' => ['required', 'numeric', 'min:1', 'max:1000000', 'regex:/^\d+(?:\.\d{1,2})?$/']]);
         $quote = Str::uuid()->toString();
-        $request->session()->put('payment_quotes.'.$quote, ['fee' => (int) $data['fee'], 'created_at' => now()->timestamp]);
+        $request->session()->put('payment_quotes.'.$quote, ['base_minor' => (int) round((float) $data['fee'] * 100), 'created_at' => now()->timestamp]);
         return redirect()->route('payment.details.show', ['quote' => $quote]);
     }
 
@@ -39,10 +39,10 @@ class PaymentController extends Controller
     {
         $quoteId = (string) $request->query('quote');
         $quote = $request->session()->get('payment_quotes.'.$quoteId);
-        if (!$quote || !in_array((int) ($quote['fee'] ?? 0), self::PAYPAL_FEES, true) || now()->timestamp - ($quote['created_at'] ?? 0) > 3600) {
-            return redirect()->route('payment')->withErrors(['fee' => 'Please select a valid fee to continue.']);
+        if (!$quote || !is_int($quote['base_minor'] ?? null) || ($quote['base_minor'] ?? 0) < 100 || ($quote['base_minor'] ?? 0) > 100000000 || now()->timestamp - ($quote['created_at'] ?? 0) > 3600) {
+            return redirect()->route('payment')->withErrors(['fee' => 'Please enter a valid fee to continue.']);
         }
-        $baseMinor = (int) $quote['fee'] * 100; $taxMinor = (int) round($baseMinor * .10);
+        $baseMinor = $quote['base_minor']; $taxMinor = (int) round($baseMinor * self::PAYPAL_TAX_RATE);
         return view('pages.payment-details', $this->sidebar->get() + ['quoteId' => $quoteId, 'baseMinor' => $baseMinor,
             'taxMinor' => $taxMinor, 'totalMinor' => $baseMinor + $taxMinor,
             'paypalConfigured' => $this->paypal->configured(), 'paypalClientId' => config('services.paypal.client_id')]);
@@ -126,9 +126,9 @@ class PaymentController extends Controller
     {
         $data = $request->validate(['quote' => 'required|uuid']);
         $quote = $request->session()->get('payment_quotes.'.$data['quote']);
-        if (!$quote || !in_array((int) ($quote['fee'] ?? 0), self::PAYPAL_FEES, true) || now()->timestamp - ($quote['created_at'] ?? 0) > 3600) return response()->json(['message' => 'Payment quote expired.'], 422);
+        if (!$quote || !is_int($quote['base_minor'] ?? null) || ($quote['base_minor'] ?? 0) < 100 || ($quote['base_minor'] ?? 0) > 100000000 || now()->timestamp - ($quote['created_at'] ?? 0) > 3600) return response()->json(['message' => 'Payment quote expired.'], 422);
         if (!$this->paypal->configured()) return response()->json(['message' => 'PayPal is currently unavailable.'], 503);
-        $base = (int) $quote['fee'] * 100; $tax = (int) round($base * .10); $total = $base + $tax;
+        $base = $quote['base_minor']; $tax = (int) round($base * self::PAYPAL_TAX_RATE); $total = $base + $tax;
         $payment = $this->pending(['provider' => 'paypal', 'amount_minor' => $total, 'base_minor' => $base,
             'tax_minor' => $tax, 'total_minor' => $total, 'currency' => 'USD']);
         try {

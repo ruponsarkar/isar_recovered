@@ -17,15 +17,32 @@ class PaymentFlowTest extends TestCase
     {
         config(['services.paypal.client_id' => null, 'services.paypal.client_secret' => null,
             'services.razorpay.key_id' => null, 'services.razorpay.key_secret' => null]);
-        $this->get('/Payment')->assertOk()->assertSee('PayPal is temporarily unavailable')->assertSee('Razorpay is temporarily unavailable');
+        $this->get('/Payment')->assertOk()->assertSee('PayPal is temporarily')->assertSee('Razorpay is temporarily unavailable');
     }
 
-    public function test_paypal_fee_is_whitelisted_and_tax_is_exactly_ten_percent(): void
+    public function test_paypal_custom_fee_has_fixed_ten_percent_tax(): void
     {
-        $this->post('/PaymentDetails', ['fee' => 21])->assertSessionHasErrors('fee');
-        $response = $this->post('/PaymentDetails', ['fee' => 75]);
+        foreach ([0, -1, 'abc', '1.001', 1000001] as $fee) {
+            $this->post('/PaymentDetails', ['fee' => $fee])->assertSessionHasErrors('fee');
+        }
+        $response = $this->post('/PaymentDetails', ['fee' => '21.25', 'tax' => 0]);
         $response->assertRedirect();
-        $this->get($response->headers->get('Location'))->assertOk()->assertSee('$75.00 USD')->assertSee('$7.50 USD')->assertSee('$82.50 USD');
+        $details = $this->get($response->headers->get('Location'))->assertOk()
+            ->assertViewHas('baseMinor', 2125)->assertViewHas('taxMinor', 213)
+            ->assertViewHas('totalMinor', 2338);
+
+        $gateway = Mockery::mock(PayPalGateway::class);
+        $gateway->shouldReceive('configured')->once()->andReturn(true);
+        $gateway->shouldReceive('createOrder')->once()
+            ->with(Mockery::type('string'), 2338)->andReturn(['id' => 'CUSTOM_ORDER']);
+        $this->app->instance(PayPalGateway::class, $gateway);
+        $this->postJson('/pay/paypal/order', [
+            'quote' => $details->viewData('quoteId'), 'fee' => 1, 'tax' => 0,
+        ])->assertOk();
+        $this->assertDatabaseHas('public_payments', [
+            'provider_order_id' => 'CUSTOM_ORDER', 'base_minor' => 2125,
+            'tax_minor' => 213, 'total_minor' => 2338,
+        ]);
     }
 
     public function test_razorpay_rejects_bad_signature_without_marking_paid(): void

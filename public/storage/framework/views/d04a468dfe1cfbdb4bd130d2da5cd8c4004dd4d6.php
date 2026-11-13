@@ -80,7 +80,7 @@
         </article>
         <aside class="col-md-4 read-article-aside" aria-label="Journal and download details">
             <div class="text-center py-2">
-                <?php if(!empty($article->file)): ?><a href="<?php echo e(route('article.download', $article->id)); ?>" class="btn btn-success"><i class="fa-solid fa-download"></i> &nbsp; Download</a><?php else: ?><span class="text-muted">PDF unavailable</span><?php endif; ?>
+                <?php if(!empty($article->file)): ?><a href="<?php echo e(route('article.download', ['id' => $article->id])); ?>" class="btn btn-success" download><i class="fa-solid fa-download"></i> &nbsp; Download</a><?php else: ?><span class="text-muted">PDF unavailable</span><?php endif; ?>
                 <span class="btn btn-secondary" aria-label="<?php echo e($article->count ?? 0); ?> downloads"><i class="fa-solid fa-eye"></i> &nbsp; <?php echo e($article->count ?? 0); ?></span>
             </div>
             <hr>

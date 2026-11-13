@@ -13,8 +13,8 @@
             <div class="logo-grid">
                 <?php $__currentLoopData = $indexings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <a href="<?php echo e($i['link'] ?? '#'); ?>" target="_blank" rel="noopener"><img
-                            src="<?php echo e(asset_url('indexing/' . ($i['img'] ?? ''))); ?>"
-                            onerror="this.src='<?php echo e(asset_url('indexings/' . ($i['img'] ?? ''))); ?>'"
+                            src="<?php echo e(backend_asset_url('indexing/' . ($i['img'] ?? ''))); ?>"
+                            onerror="this.src='<?php echo e(backend_asset_url('indexings/' . ($i['img'] ?? ''))); ?>'"
                             alt="Indexing service"></a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
@@ -22,7 +22,7 @@
             <div class="side-card">
                 <div class="section-title">Certificate</div>
                 <?php $__currentLoopData = $certificates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <img class="certificate" src="<?php echo e(asset_url('certificate/' . ($c['img'] ?? ''))); ?>"
+                    <img class="certificate" src="<?php echo e(backend_asset_url('certificate/' . ($c['img'] ?? ''))); ?>"
                         alt="Journal certificate">
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>

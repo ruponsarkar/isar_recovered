@@ -457,7 +457,7 @@
     'paypal' => 
     array (
       'client_id' => 'AQG2uGbCFA6Pki1lcdQjXgNYLGq8X2AczH5kyh5qE5YwVCnc7JHbBkAOJaJtYv1X9A-EODzy-c2hujwn',
-      'client_secret' => NULL,
+      'client_secret' => 'EKvcHfNnQpdANNRYMfh-xUWRTR5_GC_oPymV_OnsJH8ltStxpc4zxtyP92Kx1HMOzdQFgkE8AZzov9mM',
       'mode' => 'live',
     ),
   ),

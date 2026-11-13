@@ -101,13 +101,14 @@
                                 <div class="article-title mt-2">{{ $article['name'] ?? $article['title'] }}</div>
                                 <div class="article-meta flex-column align-items-start"><span><i class="fa-regular fa-user"></i>
                                         {{ author_text($article['aname'] ?? ($article['author'] ?? 'ISAR Research Author')) }}</span>
-                                        {{-- <span class="article-affiliations w-100"><i
+                                        <span class="article-affiliations w-100"><i
                                             class="fa-solid fa-bookmark"></i>
-                                        {{ author_text($article['designation'] ?? 'Peer-reviewed publication') }}</span> --}}
+                                        {{ author_text(\Illuminate\Support\Str::words($article['designation'] ?? 'Peer-reviewed publication', 12, '...')) }}</span>
                                 </div>
-                                @if (!empty($article['doi']) && $article['doi'] !== 'null')
+                                @php($articleDoi = \App\Services\Seo::doi($article['doi'] ?? ''))
+                                @if ($articleDoi !== '')
                                     <div class="article-doi">DOI: <a
-                                            href="{{ $article['doi'] }}">{{ $article['doi'] }}</a></div>
+                                            href="https://doi.org/{{ $articleDoi }}">{{ $articleDoi }}</a></div>
                                 @endif
                                 <div class="article-actions">
                                     <button class="btn btn-outline-secondary btn-sm" type="button"

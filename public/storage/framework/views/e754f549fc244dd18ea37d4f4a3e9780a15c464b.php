@@ -78,7 +78,7 @@
                                         <article class="editor-card">
                                             <div class="row">
                                                 <div class="col-md-3"><img
-                                                        src="<?php echo e(asset_url('editors/' . ($editor['image'] ?? ''))); ?>"
+                                                        src="<?php echo e(backend_asset_url('editors/' . ($editor['image'] ?? ''))); ?>"
                                                         alt="<?php echo e($editor['name'] ?? 'Editor'); ?>"></div>
                                                 <div class="col-md-9"><strong><?php echo e($editor['name'] ?? ''); ?></strong>
                                                     <div><?php echo e(['chief' => 'Editor-in-Chief', 'deputy_chief' => 'Deputy Chief Editor', 'ass' => 'Editor'][$type]); ?></div>
@@ -111,7 +111,7 @@
             <aside class="col-lg-3">
                 <div class="paper-card journal-cover-card">
                     <div class="paper-body">
-                        <img class="journal-cover" src="<?php echo e(asset_url('journal/' . ($journal['photo'] ?? ''))); ?>"
+                        <img class="journal-cover" src="<?php echo e(backend_asset_url('journal/' . ($journal['photo'] ?? ''))); ?>"
                             alt="<?php echo e($journal['j_name'] ?? 'Journal'); ?> cover">
                     </div>
                 </div>
