@@ -6,3 +6,13 @@ build/
 .env.production.local
 public/assets/
 /assets/
+
+# Cache files
+.phpunit.result.cache
+.phpunit.cache/
+/bootstrap/cache/*.php
+/storage/framework/cache/data/
+/storage/framework/views/*.php
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/logs/*.log

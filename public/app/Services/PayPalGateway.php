@@ -40,7 +40,17 @@ class PayPalGateway
 
     public function captureOrder(string $orderId): array
     {
-        return $this->client()->withHeaders(['PayPal-Request-Id' => 'isar-capture-'.$orderId])
-            ->post($this->baseUrl().'/v2/checkout/orders/'.$orderId.'/capture')->throw()->json();
+        $response = $this->client()->withHeaders(['PayPal-Request-Id' => 'isar-capture-'.$orderId, 'Prefer' => 'return=representation'])
+            ->post($this->baseUrl().'/v2/checkout/orders/'.$orderId.'/capture');
+        if ($response->successful()) return $response->json();
+        $issue = $response->json('details.0.issue') ?? $response->json('name');
+        // Already captured (e.g. retry / double click): return the order so it can still be verified.
+        if ($issue === 'ORDER_ALREADY_CAPTURED') return $this->getOrder($orderId);
+        throw new PayPalApiException($issue, $response->json('debug_id'), $response->status(), $response->body());
+    }
+
+    public function getOrder(string $orderId): array
+    {
+        return $this->client()->get($this->baseUrl().'/v2/checkout/orders/'.$orderId)->throw()->json();
     }
 }

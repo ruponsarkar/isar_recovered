@@ -1,0 +1,9 @@
+# Laravel cache files (backend)
+backend/.phpunit.result.cache
+backend/.phpunit.cache/
+backend/bootstrap/cache/*.php
+backend/storage/framework/cache/data/
+backend/storage/framework/views/*.php
+backend/storage/logs/*.log
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore

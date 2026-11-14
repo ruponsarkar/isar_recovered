@@ -61,7 +61,7 @@
                     paypalMessage.textContent = '';
                     return data.id
                 },
-                onApprove: async function(data) {
+                onApprove: async function(data, actions) {
                     paypalMessage.textContent = 'Verifying payment…';
                     const response = await fetch(@json(route('pay.paypal.capture')), {
                         method: 'POST',
@@ -76,6 +76,10 @@
                         })
                     });
                     const result = await response.json();
+                    if (result.restart) {
+                        paypalMessage.textContent = result.message;
+                        return actions.restart();
+                    }
                     if (!response.ok) throw new Error(result.message || 'Payment verification failed.');
                     window.location.assign(result.redirect)
                 },

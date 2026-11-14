@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Services\PayPalApiException;
 use App\Services\PayPalGateway;
 use App\Services\RazorpayGateway;
 use App\Services\PublicSidebarData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -147,20 +149,38 @@ class PaymentController extends Controller
         $data = $request->validate(['order_id' => 'required|string|max:255', 'reference' => 'required|uuid']);
         try {
             $existing = Payment::where('reference', $data['reference'])->where('provider_order_id', $data['order_id'])->first();
-            if ($existing?->status === 'paid') return response()->json(['redirect' => route('payment.result', ['reference' => $existing->reference])]);
-            $result = $this->paypal->captureOrder($data['order_id']);
+            if (in_array($existing?->status, ['paid', 'pending_review'], true)) return response()->json(['redirect' => route('payment.result', ['reference' => $existing->reference])]);
+            try {
+                $result = $this->paypal->captureOrder($data['order_id']);
+            } catch (PayPalApiException $e) {
+                if ($e->issue === 'INSTRUMENT_DECLINED') {
+                    Log::warning('PayPal funding source declined', ['reference' => $data['reference'], 'order_id' => $data['order_id'], 'debug_id' => $e->debugId]);
+                    return response()->json(['restart' => true, 'message' => 'Your card or PayPal funding source was declined. Please try another card or payment method.'], 422);
+                }
+                throw $e;
+            }
             $payment = DB::transaction(function () use ($data, $result) {
                 $payment = Payment::where('reference', $data['reference'])->lockForUpdate()->firstOrFail();
                 if ($payment->status === 'paid') return $payment;
                 $capture = data_get($result, 'purchase_units.0.payments.captures.0', []);
+                $captureStatus = $capture['status'] ?? null;
                 $valid = $payment->provider === 'paypal' && $payment->provider_order_id === $data['order_id']
-                    && ($result['id'] ?? null) === $data['order_id'] && ($result['status'] ?? null) === 'COMPLETED'
-                    && ($capture['status'] ?? null) === 'COMPLETED'
+                    && ($result['id'] ?? null) === $data['order_id']
+                    && in_array($captureStatus, ['COMPLETED', 'PENDING'], true)
                     && strtoupper((string) data_get($capture, 'amount.currency_code')) === 'USD'
-                    && (int) round(((float) data_get($capture, 'amount.value', -1)) * 100) === $payment->total_minor;
-                if (!$valid) throw new \RuntimeException('PayPal capture was incomplete or mismatched.');
-                $payment->update(['provider_payment_id' => $capture['id'] ?? null, 'status' => 'paid', 'paid_at' => now(),
-                    'payer_name' => trim(data_get($result, 'payer.name.given_name', '').' '.data_get($result, 'payer.name.surname', '')),
+                    && (int) round(((float) data_get($capture, 'amount.value', -1)) * 100) === (int) $payment->total_minor;
+                if (!$valid) {
+                    Log::error('PayPal capture mismatch', ['reference' => $payment->reference, 'order_id' => $data['order_id'],
+                        'order_status' => $result['status'] ?? null, 'capture_status' => $captureStatus,
+                        'capture_amount' => data_get($capture, 'amount'), 'expected_minor' => $payment->total_minor,
+                        'status_details' => data_get($capture, 'status_details')]);
+                    throw new \RuntimeException('PayPal capture was incomplete or mismatched.');
+                }
+                $payment->update(['provider_payment_id' => $capture['id'] ?? null,
+                    // PENDING = PayPal took the money but is holding it (review, unverified account, currency setup).
+                    'status' => $captureStatus === 'COMPLETED' ? 'paid' : 'pending_review',
+                    'paid_at' => $captureStatus === 'COMPLETED' ? now() : null,
+                    'payer_name' => Str::limit(trim(data_get($result, 'payer.name.given_name', '').' '.data_get($result, 'payer.name.surname', '')), 150, '') ?: null,
                     'payer_email' => data_get($result, 'payer.email_address'), 'gateway_payload' => $this->safePayload($result)]);
                 return $payment;
             });
@@ -174,7 +194,8 @@ class PaymentController extends Controller
     {
         $payment = Payment::where('reference', $reference)->firstOrFail();
         return view('pages.payment-result', $this->sidebar->get() + ['payment' => $payment,
-            'reference' => $payment->reference, 'successful' => $payment->status === 'paid']);
+            'reference' => $payment->reference, 'successful' => $payment->status === 'paid',
+            'pendingReview' => $payment->status === 'pending_review']);
     }
 
     private function pending(array $attributes): Payment
