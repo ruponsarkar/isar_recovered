@@ -41,6 +41,8 @@ class PayPalGateway
     public function captureOrder(string $orderId): array
     {
         $response = $this->client()->withHeaders(['PayPal-Request-Id' => 'isar-capture-'.$orderId, 'Prefer' => 'return=representation'])
+            // PayPal rejects Laravel's default empty body "[]" (MALFORMED_REQUEST_JSON); it must be a JSON object.
+            ->withBody('{}', 'application/json')
             ->post($this->baseUrl().'/v2/checkout/orders/'.$orderId.'/capture');
         if ($response->successful()) return $response->json();
         $issue = $response->json('details.0.issue') ?? $response->json('name');
